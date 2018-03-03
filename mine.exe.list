@@ -1,0 +1,1593 @@
+EMU8086 GENERATED LISTING. MACHINE CODE <- SOURCE.
+ 
+mine.exe -- emu8086 assembler version: 4.08  
+ 
+[ 12/20/2017  --  3:19:42 PM ] 
+ 
+===================================================================================================
+[LINE]     LOC: MACHINE CODE                          SOURCE
+===================================================================================================
+ 
+[   1]        :                                       include standrd.INC
+[   2]        :                                       include laser.INC
+[   3]        :                                       include chattting.INC
+[   4]        :                                       include gamemode.inc
+[   5]        :                                       .MODEL LARGE
+[   6]        :                                       .STACK 64
+[   7]        :                                       .DATA
+[   8]        :                                       ;output
+[   9]    0040: 0A 0D 24                              Endl db 10,13,'$'  ;End line
+[  10]    0043: 65 6E 74 65 72 20 55 73 65 72 6E 61   req1 db 'enter Username: ','$'
+                6D 65 3A 20 24                      
+[  11]    0054: 50 6C 61 79 65 72 24                  playerstatment db 'Player$'
+[  12]    005B: 69 73 20 74 68 65 20 77 69 6E 6E 65   winner db 'is the winner',10,13,'$'
+                72 0A 0D 24                         
+[  13]    006B: 69 73 20 74 68 65 20 6C 6F 73 65 72   loser db 'is the loser',10,13,'$'
+                0A 0D 24                            
+[  14]    007A: 20 24                                 space db ' $'
+[  15]    007C: 2D 24                                 dash db '-$'
+[  16]    007E: 53 63 6F 72 65 3A 24                  score db 'Score:' , '$'
+[  17]    0085: 41 6D 6D 6F 3A 24                     ammo db 'Ammo:' , '$'
+[  18]    008B: 69 6E 76 69 74 65 20 74 6F 20 63 68   invgame db 'invite to chat' , '$'
+                61 74 24                            
+[  19]    009A: 69 6E 76 69 74 65 20 74 6F 20 67 61   invchat db 'invite to game' , '$'
+                6D 65 24                            
+[  20]    00A9: 71 75 69 74 65 20 74 68 65 20 70 72   invquit db 'quite the program' , '$'
+                6F 67 72 61 6D 24                   
+[  21]    00BB: 74 68 65 20 61 6E 6F 74 68 65 72 20   REFUS db 'the another did not accept invite' , '$'
+                64 69 64 20 6E 6F 74 20 61 63 63 65 
+                70 74 20 69 6E 76 69 74 65 24       
+[  22]    00DD: 66 6F 72 20 72 65 74 75 72 6E 20 74   msgret db 'for return to menu press Esc $'
+                6F 20 6D 65 6E 75 20 70 72 65 73 73 
+                20 45 73 63 20 24                   
+[  23]    00FB: 20 20 0A 0D                           WelcomeString db '  ',10,13
+[  24]    00FF: 20 0A 0D                              db ' ',10,13
+[  25]    0102: 20 0A 0D                              db ' ',10,13
+[  26]    0105: 20 0A 0D                              db ' ',10,13
+[  27]    0108: 20 20 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D   db '  ===================================================================',10,13
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 0A 0D    
+[  28]    014F: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                       *    PAC-DUEL Game    *                   ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 2A 20 20 20 20 50 41 43 2D 44 
+                55 45 4C 20 47 61 6D 65 20 20 20 20 
+                2A 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  29]    0197: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                              Control:                           ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 43 6F 6E 
+                74 72 6F 6C 3A 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  30]    01DF: 20 7C 7C 20 20 20 20 55 73 65 20 75   db ' ||    Use up, down, left and right keys to change the direction    ||',10,13
+                70 2C 20 64 6F 77 6E 2C 20 6C 65 66 
+                74 20 61 6E 64 20 72 69 67 68 74 20 
+                6B 65 79 73 20 74 6F 20 63 68 61 6E 
+                67 65 20 74 68 65 20 64 69 72 65 63 
+                74 69 6F 6E 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  31]    0227: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||           of the player and tap button to shoot laser           ||',10,13
+                20 20 6F 66 20 74 68 65 20 70 6C 61 
+                79 65 72 20 61 6E 64 20 74 61 70 20 
+                62 75 74 74 6F 6E 20 74 6F 20 73 68 
+                6F 6F 74 20 6C 61 73 65 72 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  32]    026F: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                                                                 ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  33]    02B7: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                            How to play:                         ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 48 6F 77 20 74 
+                6F 20 70 6C 61 79 3A 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  34]    02FF: 20 7C 7C 20 20 20 74 68 65 72 65 20   db ' ||   there are 3 map,each map has points try to collect points     ||',10,13
+                61 72 65 20 33 20 6D 61 70 2C 65 61 
+                63 68 20 6D 61 70 20 68 61 73 20 70 
+                6F 69 6E 74 73 20 74 72 79 20 74 6F 
+                20 63 6F 6C 6C 65 63 74 20 70 6F 69 
+                6E 74 73 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  35]    0347: 20 7C 7C 20 20 20 6D 6F 72 65 20 74   db ' ||   more than the another player , when the two players clash     ||',10,13
+                68 61 6E 20 74 68 65 20 61 6E 6F 74 
+                68 65 72 20 70 6C 61 79 65 72 20 2C 
+                20 77 68 65 6E 20 74 68 65 20 74 77 
+                6F 20 70 6C 61 79 65 72 73 20 63 6C 
+                61 73 68 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  36]    038F: 20 7C 7C 20 20 20 74 68 65 20 70 6C   db ' ||   the player with the highst score at that moment will win      ||',10,13
+                61 79 65 72 20 77 69 74 68 20 74 68 
+                65 20 68 69 67 68 73 74 20 73 63 6F 
+                72 65 20 61 74 20 74 68 61 74 20 6D 
+                6F 6D 65 6E 74 20 77 69 6C 6C 20 77 
+                69 6E 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  37]    03D7: 20 7C 7C 20 20 20 61 74 20 74 68 69   db ' ||   at this round But be aware there are trapes with grey         ||',10,13
+                73 20 72 6F 75 6E 64 20 42 75 74 20 
+                62 65 20 61 77 61 72 65 20 74 68 65 
+                72 65 20 61 72 65 20 74 72 61 70 65 
+                73 20 77 69 74 68 20 67 72 65 79 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  38]    041F: 20 7C 7C 20 20 20 20 20 20 20 63 6F   db ' ||       color when you go throw it you can not return             ||',10,13
+                6C 6F 72 20 77 68 65 6E 20 79 6F 75 
+                20 67 6F 20 74 68 72 6F 77 20 69 74 
+                20 79 6F 75 20 63 61 6E 20 6E 6F 74 
+                20 72 65 74 75 72 6E 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  39]    0467: 20 7C 7C 20 20 20 74 68 65 72 65 20   db ' ||   there are ammo you need to collect it for shoot the laser     ||',10,13
+                61 72 65 20 61 6D 6D 6F 20 79 6F 75 
+                20 6E 65 65 64 20 74 6F 20 63 6F 6C 
+                6C 65 63 74 20 69 74 20 66 6F 72 20 
+                73 68 6F 6F 74 20 74 68 65 20 6C 61 
+                73 65 72 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  40]    04AF: 20 7C 7C 20 20 20 20 69 74 20 77 69   db ' ||    it will go as horizontel &vertical line ,if it hit the       ||',10,13
+                6C 6C 20 67 6F 20 61 73 20 68 6F 72 
+                69 7A 6F 6E 74 65 6C 20 26 76 65 72 
+                74 69 63 61 6C 20 6C 69 6E 65 20 2C 
+                69 66 20 69 74 20 68 69 74 20 74 68 
+                65 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  41]    04F7: 20 7C 7C 20 20 20 20 20 20 61 6E 6F   db ' ||      another palyer it will decrease his points by 5            ||',10,13
+                74 68 65 72 20 70 61 6C 79 65 72 20 
+                69 74 20 77 69 6C 6C 20 64 65 63 72 
+                65 61 73 65 20 68 69 73 20 70 6F 69 
+                6E 74 73 20 62 79 20 35 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  42]    053F: 20 7C 7C 20 20 20 61 74 20 74 68 65   db ' ||   at the end the player who win 2 maps or more will be the      ||',10,13
+                20 65 6E 64 20 74 68 65 20 70 6C 61 
+                79 65 72 20 77 68 6F 20 77 69 6E 20 
+                32 20 6D 61 70 73 20 6F 72 20 6D 6F 
+                72 65 20 77 69 6C 6C 20 62 65 20 74 
+                68 65 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  43]    0587: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                               winner                            ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 77 69 
+                6E 6E 65 72 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  44]    05CF: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                                                                 ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  45]    0617: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                                                                 ||',10,13
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  46]    065F: 20 7C 7C 20 20 20 20 20 20 20 20 20   db ' ||                  Press any key to start the game                ||',10,13
+                20 20 20 20 20 20 20 20 20 50 72 65 
+                73 73 20 61 6E 79 20 6B 65 79 20 74 
+                6F 20 73 74 61 72 74 20 74 68 65 20 
+                67 61 6D 65 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 7C 7C 0A 0D 
+                                                    
+[  47]    06A7: 20 20 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D   db '  ===================================================================',10,13
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 0A 0D    
+[  48]    06EE: 24                                    db '$'
+[  49]        :                                       
+[  50]    06EF: 20 20 0A 0D                           menu db '  ',10,13
+[  51]    06F3: 20 0A 0D                              db ' ',10,13
+[  52]    06F6: 20 0A 0D                              db ' ',10,13
+[  53]    06F9: 20 0A 0D                              db ' ',10,13
+[  54]    06FC: 20 20 20 20 20 20 20 20 20 20 20 20   db '                ====================================================',10,13
+                20 20 20 20 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 0A 0D       
+[  55]    0742: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  56]    0789: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  57]    07D0: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||              *    PAC-DUEL Game    *             ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 2A 20 20 20 20 
+                50 41 43 2D 44 55 45 4C 20 47 61 6D 
+                65 20 20 20 20 2A 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  58]    0817: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||--------------------------------------------------||',10,13
+                20 20 20 7C 7C 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 7C 7C 0A 0D    
+[  59]    085E: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  60]    08A5: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                for start chat press 1            ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 66 6F 72 
+                20 73 74 61 72 74 20 63 68 61 74 20 
+                70 72 65 73 73 20 31 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  61]    08EC: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                for start game press 2            ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 66 6F 72 
+                20 73 74 61 72 74 20 67 61 6D 65 20 
+                70 72 65 73 73 20 32 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  62]    0933: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||             for end the program press ESC        ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 66 6F 72 20 65 6E 
+                64 20 74 68 65 20 70 72 6F 67 72 61 
+                6D 20 70 72 65 73 73 20 45 53 43 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  63]    097A: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  64]    09C1: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  65]    0A08: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  66]    0A4F: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  67]    0A96: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  68]    0ADD: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  69]    0B24: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  70]    0B6B: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  71]    0BB2: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  72]    0BF9: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  73]    0C40: 20 20 20 20 20 20 20 20 20 20 20 20   db '               ||                                                  ||',10,13
+                20 20 20 7C 7C 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 20 20 20 20 20 
+                20 20 20 20 20 20 20 7C 7C 0A 0D    
+[  74]    0C87: 20 20 20 20 20 20 20 20 20 20 20 20   db '                ====================================================',10,13
+                20 20 20 20 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 3D 
+                3D 3D 3D 3D 3D 3D 3D 3D 0A 0D       
+[  75]    0CCD: 24                                    db '$'
+[  76]    0CCE: 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D   mychat db '------------------chat------------------$'
+                2D 2D 2D 2D 2D 2D 63 68 61 74 2D 2D 
+                2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 2D 
+                2D 2D 2D 2D 24                      
+[  77]        :                                       
+[  78]        :                                       ;const for the game
+[  79]    0CF7: 40 01                                 limitX dw 320      ;The rightmost pixel can be reached
+[  80]    0CF9: 83 00                                 limitY dw 131      ;The downmost pixel can be reached
+[  81]    0CFB: 07 00                                 PlayerLength dw 7  ;The side length of the player ,note if change go to checkdown
+[  82]    0CFD: 0B                                    LaserColor db 11   ;The color of Laser
+[  83]    0CFE: 09                                    Player1Color db 9  ;The color of Player 1
+[  84]    0CFF: 0C                                    Player2Color db 12 ;The color of Player 2
+[  85]    0D00: 04                                    WallColor db 4     ;The color of Wall
+[  86]    0D01: 0D                                    BonusColor db 13   ;The color of Bonus
+[  87]    0D02: 0E                                    BombColor db 14    ;The color of Bombs
+[  88]    0D03: 07                                    trapColor db 7     ;The color of to-Wall Converter
+[  89]        :                                       
+[  90]        :                                       ;ASCII of the game
+[  91]    0D04: 4D                                    RightDirButton db 4dh  ;ASCII of right direction button for player
+[  92]    0D05: 4B                                    LeftDirButton db  4bh  ;ASCII of left direction button for player
+[  93]    0D06: 48                                    UpDirButton db    48h  ;ASCII of up direction button for player
+[  94]    0D07: 50                                    DownDirButton db  50h  ;ASCII of down direction button for player
+[  95]    0D08: 09                                    ShootButton1 db 9     ;ASCII of shoot button for player
+[  96]    0D09: 0D                                    StartButton db 13       ;ASCII of the button which start the game
+[  97]    0D0A: 1B                                    EndButton db 27          ;ASCII of the button which end the game
+[  98]        :                                       
+[  99]        :                                       ;logic & info for the game
+[ 100]    0D0B: 00 00 00 00                           Player1x DD 0  ;X coordinate of player 1
+[ 101]    0D0F: 00 00 00 00                           Player1y DD 0  ;Y coordinate of player 1
+[ 102]    0D13: 00 00 00 00                           Player2x DD 0  ;X coordinate of player 2
+[ 103]    0D17: 00 00 00 00                           Player2y DD 0  ;Y coordinate of player 2
+[ 104]    0D1B: 00 00 00 00                           Player1xx DD 0 ;temp X coordinate of player 1
+[ 105]    0D1F: 00 00 00 00                           Player1yy DD 0 ;temp Y coordinate of player 1
+[ 106]    0D23: 00 00 00 00                           Player2xx DD 0 ;temp X coordinate of player 2
+[ 107]    0D27: 00 00 00 00                           Player2yy DD 0 ;temp Y coordinate of player 2
+[ 108]    0D2B: 00                                    dirc1 DB 0     ;0:up / 1:down / 2:right /3:left for player 1
+[ 109]    0D2C: 00                                    dirc2 DB 0     ;0:up / 1:down / 2:right /3:left for player 2
+[ 110]    0D2D: 00 00                                 score1 DW 0    ;Score of player 1
+[ 111]    0D2F: 00 00                                 score2 DW 0    ;Score of player 2
+[ 112]    0D31: 00                                    bombs1 Db 0    ;ammo of player 1
+[ 113]    0D32: 00                                    bombs2 Db 0    ;ammo of player 2
+[ 114]        :                                       ; name of the two player
+[ 115]    0D33: 0A                                    name2        db  10        ;MAX NUMBER OF CHARACTERS ALLOWED (20).
+[ 116]    0D34: 00                                    db  ?         ;NUMBER OF CHARACTERS ENTERED BY USER.
+[ 117]    0D35: 24 24 24 24 24 24 24 24 24 24 24      db  11 dup(36) ;CHARACTERS ENTERED BY USER. THE LAST CHAR (11) MUST BE =$
+[ 118]        :                                       
+[ 119]    0D40: 0A                                    name1        db  10        ;MAX NUMBER OF CHARACTERS ALLOWED (20).
+[ 120]    0D41: 14                                    db  20         ;NUMBER OF CHARACTERS ENTERED BY USER.
+[ 121]    0D42: 24 24 24 24 24 24 24 24 24 24 24      db  11 dup(36) ;CHARACTERS ENTERED BY USER.  THE LAST CHAR (11) MUST BE =$
+[ 122]        :                                       ;flags
+[ 123]    0D4D: 00                                    endflag  db 0
+[ 124]    0D4E: 00                                    flag1    db 0       ;To check if player 1 is shot.
+[ 125]    0D4F: 00                                    flag2    db 0       ;To check if player 2 is shot.
+[ 126]    0D50: 00                                    nodelete db 0       ;Flag to if the laser is shot or not.
+[ 127]    0D51: 01                                    play1    db 1       ;Flag to Player 1
+[ 128]    0D52: 02                                    play2    db 2       ;Flag to Player 2
+[ 129]    0D53: 00                                    Collisionflag Db 0  ;if the player already Collision
+[ 130]    0D54: 00                                    myflag   db 0       ;who is the player1
+[ 131]    0D55: 00                                    stateflag db 0      ;0,1,2,3,4= dirc || 5= laser shot|| 6= endgame, 7 start chat, 8 = MAIN MENU
+[ 132]        :                                       
+[ 133]        :                                       ;map
+[ 134]    0D56: 00                                    win1 db 0         ;number of games that player1 win
+[ 135]    0D57: 00                                    win2 db 0         ;number of games that player2 win
+[ 136]    0D58: 00                                    mapn db 0         ;flag descr what is the curr map
+[ 137]    0D59: FF FF 00 00                           delay DD   0FFFFh ;speed -> change for each map
+[ 138]        :                                       ;for erase star
+[ 139]    0D5D: 00 00 00 00                           erasex dd 0
+[ 140]    0D61: 00 00 00 00                           erasey dd 0
+[ 141]        :                                       ;TO SEND & RECIVE
+[ 142]    0D65: 00                                    SENDDATA DB 0       ;the data you want to send at the game And main menu
+[ 143]        :                                       ;RECDATA DB 0
+[ 144]    0D66: 00                                    VALUE       DB      0   ;RECIVE data (put the value in it when call RECIVE)
+[ 145]    0D67: 00                                    LETTER      DB      0   ;SEND data in chating
+[ 146]    0D68: 00                                    X1          DB      0   ;X POSTION OF CURSOR FOR PLAYER 1
+[ 147]    0D69: 00                                    Y1          DB      0   ;Y POSTION OF CURSOR FOR PLAYER 1
+[ 148]    0D6A: 00                                    X2          DB      0   ;X POSTION OF CURSOR FOR PLAYER 2
+[ 149]    0D6B: 0E                                    Y2          DB      14  ;Y POSTION OF CURSOR FOR PLAYER 2
+[ 150]        :                                       ;-------------------------------------------------------------------------------------------------
+[ 151]        :                                       .code
+[ 152]    0D70:                                       MAIN    PROC FAR
+[ 153]    0D70: B8 04 00                              MOV AX,@DATA
+[ 154]    0D73: 8E D8                                 MOV DS,AX
+[ 155]    0D75: 8E C0                                 mov ES,AX
+[ 156]        :                                       ;intial for program
+[ 157]    0D77: 60 BA FB 03 B0 80 EE BA F8 03 B0 0C   Configure
+                EE BA F9 03 B0 00 EE BA FB 03 B0 1B 
+                EE 61                               
+[ 158]    0D91: B4 09 BA 03 00 CD 21 B4 0A BA 00 0D   intialname
+                CD 21 BB 00 00 BE 00 0D 83 C6 02 BF 
+                F3 0C 83 C7 02 8A 04 A2 27 0D 60 BA 
+                FD 03 EC 24 20 74 FB 80 3E 27 0D 0D 
+                74 0E BA F8 03 A0 27 0D EE C6 06 27 
+                0D 00 EB 0C BA F8 03 A0 27 0D EE C6 
+                06 27 0D 0A 61 46 60 BA FD 03 EC 24 
+                01 74 09 BA F8 03 EC A2 26 0D EB 05 
+                C6 06 26 0D 00 61 80 3E 26 0D 00 74 
+                E1 A0 26 0D 88 05 47 43 83 FB 0A 7E 
+                A4                                  
+[ 159]        :                                       ;jmp gamemode
+[ 160]    0E0A:                                       retu:   ;THE MAIN OF PROGRAM
+[ 161]    0E0A: C6 06 14 0D 00                        mov myflag,0
+[ 162]        :                                       ;MOV  SENDDATA,EndButton ;our ASSCI for main menu
+[ 163]        :                                       ;Send SENDDATA   ;tell the another i am in the main menu
+[ 164]    0E0F:                                       reci:
+[ 165]        :                                       ;Receive
+[ 166]        :                                       ;CMP VALUE,27 ;EndButton  ;CHECK IF THERE ARE SOMETHING TO RECIVE
+[ 167]        :                                       ;Jne reci
+[ 168]    0E0F: B4 00 B0 03 CD 10                     TEXTMODE
+[ 169]    0E15: B4 09 BA AF 06 CD 21                  displaystring menu
+[ 170]    0E1C:                                       Again1:
+[ 171]        :                                       ;read char & decide what mode
+[ 172]    0E1C: B4 01                                 mov ah,1
+[ 173]    0E1E: CD 16                                 int 16h
+[ 174]    0E20: 74 48                                 jz conti
+[ 175]    0E22: 50                                    PUSH AX
+[ 176]    0E23: B4 00                                 mov ah,0
+[ 177]    0E25: CD 16                                 int 16h
+[ 178]    0E27: 58                                    POP AX
+[ 179]    0E28: A2 25 0D                              mov SENDDATA,al
+[ 180]    0E2B: 60 BA FD 03 EC 24 20 74 FB 80 3E 25   Send SENDDATA
+                0D 0D 74 0E BA F8 03 A0 25 0D EE C6 
+                06 25 0D 00 EB 0C BA F8 03 A0 25 0D 
+                EE C6 06 25 0D 0A 61                
+[ 181]    0E56: 3C 31                                 cmp al,'1'
+[ 182]    0E58: 75 03 E9 45 28                        jz chatmode
+[ 183]    0E5D: 3C 32                                 cmp al,'2'
+[ 184]    0E5F: 74 77                                 jz gamemode
+[ 185]    0E61: 3A 06 CA 0C                           cmp al,EndButton
+[ 186]    0E65: 75 03 E9 5E 2A                        jz EndApp
+[ 187]    0E6A:                                       conti:
+[ 188]    0E6A: B0 00                                 mov al,0
+[ 189]    0E6C: 60 BA FD 03 EC 24 01 74 09 BA F8 03   Receive
+                EC A2 26 0D EB 05 C6 06 26 0D 00 61 
+                                                    
+[ 190]    0E84: A0 26 0D                              mov al,value
+[ 191]    0E87: 3C 31                                 cmp al,'1'
+[ 192]    0E89: 74 25                                 jz invc
+[ 193]    0E8B: 3C 32                                 cmp al,'2'
+[ 194]    0E8D: 74 08                                 jz invg
+[ 195]    0E8F: 3A 06 CA 0C                           cmp al,EndButton
+[ 196]    0E93: 74 2F                                 jz invq
+[ 197]    0E95: EB 85                                 jmp Again1
+[ 198]        :                                       
+[ 199]    0E97: B4 02 B7 00 B2 00 B6 17 CD 10 B4 09   invg:   dispstring  invgame,0,23
+                BA 4B 00 CD 21                      
+[ 200]    0EA8: C6 06 14 0D 02                        mov myflag,2
+[ 201]    0EAD: E9 6C FF                              jmp Again1
+[ 202]        :                                       
+[ 203]    0EB0: B4 02 B7 00 B2 00 B6 17 CD 10 B4 09   invc:   dispstring  invchat,0,23
+                BA 5A 00 CD 21                      
+[ 204]    0EC1: E9 58 FF                              jmp Again1
+[ 205]        :                                       
+[ 206]    0EC4: B4 02 B7 00 B2 00 B6 17 CD 10 B4 09   invq:   dispstring  invquit,0,23
+                BA 69 00 CD 21                      
+[ 207]    0ED5: E9 44 FF                              jmp Again1
+[ 208]        :                                       
+[ 209]        :                                       
+[ 210]    0ED8:                                       gamemode:
+[ 211]        :                                       ;Receive
+[ 212]        :                                       ;CMP VALUE, 0
+[ 213]        :                                       ;jz gamemode
+[ 214]        :                                       ;CMP VALUE, '2'
+[ 215]        :                                       ;Jne retu
+[ 216]        :                                       ;mov  SENDDATA,8
+[ 217]        :                                       ;Send SENDDATA
+[ 218]        :                                       ;Receive
+[ 219]        :                                       ;intial for game
+[ 220]    0ED8: B4 09 BA BB 00 CD 21                  displaystring WelcomeString
+[ 221]    0EDF: B4 00                                 mov ah,0
+[ 222]    0EE1: CD 16                                 int 16H
+[ 223]    0EE3: A2 27 0D                              MOV LETTER,al   ;send number to another
+[ 224]    0EE6: 60 BA FD 03 EC 24 20 74 FB 80 3E 27   Send LETTER
+                0D 0D 74 0E BA F8 03 A0 27 0D EE C6 
+                06 27 0D 00 EB 0C BA F8 03 A0 27 0D 
+                EE C6 06 27 0D 0A 61                
+[ 225]    0F11:                                       LOP1001:
+[ 226]    0F11: 60 BA FD 03 EC 24 01 74 09 BA F8 03   Receive
+                EC A2 26 0D EB 05 C6 06 26 0D 00 61 
+                                                    
+[ 227]    0F29: 80 3E 26 0D 00                        CMP VALUE,0
+[ 228]    0F2E: 74 E1                                 Je LOP1001
+[ 229]        :                                       ;CMP al,VALUE
+[ 230]        :                                       ;Je gamemode
+[ 231]    0F30: A0 27 0D                              MOV al,LETTER
+[ 232]    0F33: 3A 06 26 0D                           CMP al,VALUE
+[ 233]    0F37: 7D 07                                 jge sec
+[ 234]    0F39: C6 06 14 0D 00                        mov myflag,0
+[ 235]    0F3E: EB 07                                 jmp inti
+[ 236]    0F40: C6 06 14 0D 02                        sec:    mov myflag,2
+[ 237]    0F45: EB 00                                 jmp inti
+[ 238]    0F47: B4 00 B0 13 CD 10                     inti:   videomode
+[ 239]    0F4D: C6 06 18 0D 00                        mov mapn,0
+[ 240]    0F52: C6 06 16 0D 00                        mov win1,0
+[ 241]    0F57: C6 06 17 0D 00                        mov win2,0
+[ 242]    0F5C: C6 06 0D 0D 00                        mov endflag,0
+[ 243]        :                                       ;------------------Game Start-----------------------
+[ 244]    0F61:                                       mainmap:
+[ 245]    0F61: A0 18 0D                              mov al,mapn ;cal number of win to player 2
+[ 246]    0F64: 2A 06 16 0D                           sub al,win1
+[ 247]    0F68: A2 17 0D                              mov win2,AL
+[ 248]    0F6B: 60 B0 00 B4 0C B9 00 00 BA 00 00 CD   drawmap
+                10 42 81 FA C8 00 7E F7 41 81 F9 40 
+                01 7E ED 60 B4 0F CD 10 B4 02 B6 00 
+                B2 00 CD 10 61 61 60 BB 00 00 BA 00 
+                00 A0 C0 0C B4 0C B9 00 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 81 FB 82 
+                00 75 EE 61 60 BB 00 00 BA 00 00 A0 
+                C0 0C B4 0C B9 3F 01 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 42 43 81 FB 82 00 75 
+                EE 61 60 BB 00 00 BA 00 00 A0 C0 0C 
+                B4 0C B9 00 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 81 FB 40 01 75 EE 61 
+                60 BB 00 00 BA 82 00 A0 C0 0C B4 0C 
+                B9 00 00 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 41 43 81 FB 40 01 75 EE 61 BA 05 
+                00 B9 05 00 60 BB 00 00 8B D2 A0 C1 
+                0C B4 0C 8B C9 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 01 75 EF 61 83 
+                C1 0A 81 F9 3E 01 7E D8 83 C2 0A 83 
+                FA 7D 7E CD A0 18 0D 3C 00 74 0A 3C 
+                01 75 03 E9 36 04 E9 75 09 60 BB 00 
+                00 BA 0A 00 A0 C0 0C B4 0C B9 0A 00 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 42 43 
+                83 FB 32 75 EF 61 60 BB 00 00 BA 0A 
+                00 A0 C0 0C B4 0C B9 36 01 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 83 FB 32 
+                75 EF 61 60 BB 00 00 BA 46 00 A0 C0 
+                0C B4 0C B9 36 01 B4 0C 8B C9 8B D2 
+                8A C0 CD 10 42 43 83 FB 32 75 EF 61 
+                60 BB 00 00 BA 46 00 A0 C0 0C B4 0C 
+                B9 0A 00 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 42 43 83 FB 32 75 EF 61 60 BB 00 
+                00 BA 0A 00 A0 C0 0C B4 0C B9 0A 00 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 41 43 
+                81 FB 91 00 75 EE 61 60 BB 00 00 BA 
+                0A 00 A0 C0 0C B4 0C B9 A5 00 B4 0C 
+                8B C9 8B D2 8A C0 CD 10 41 43 81 FB 
+                91 00 75 EE 61 60 BB 00 00 BA 78 00 
+                A0 C0 0C B4 0C B9 0A 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 41 43 81 FB 91 00 
+                75 EE 61 60 BB 00 00 BA 78 00 A0 C0 
+                0C B4 0C B9 A5 00 B4 0C 8B C9 8B D2 
+                8A C0 CD 10 41 43 81 FB 91 00 75 EE 
+                61 60 BB 00 00 BA 14 00 A0 C0 0C B4 
+                0C B9 14 00 B4 0C 8B C9 8B D2 8A C0 
+                CD 10 42 43 83 FB 5C 75 EF 61 60 BB 
+                00 00 BA 14 00 A0 C0 0C B4 0C B9 2C 
+                01 B4 0C 8B C9 8B D2 8A C0 CD 10 42 
+                43 83 FB 5C 75 EF 61 B8 14 00 50 60 
+                BB 00 00 8B D0 A0 C0 0C B4 0C B9 1E 
+                00 B4 0C 8B C9 8B D2 8A C0 CD 10 41 
+                43 81 FB 04 01 75 EE 61 58 05 0A 00 
+                3D 6E 00 7E D5 60 B9 05 00 BA 05 00 
+                A0 C2 0C B4 0C CD 10 41 CD 10 41 CD 
+                10 83 E9 03 CD 10 49 CD 10 83 C1 02 
+                4A CD 10 83 C2 02 CD 10 49 CD 10 83 
+                C1 02 CD 10 49 42 CD 10 61 60 B9 3B 
+                01 BA 05 00 A0 C2 0C B4 0C CD 10 41 
+                CD 10 41 CD 10 83 E9 03 CD 10 49 CD 
+                10 83 C1 02 4A CD 10 83 C2 02 CD 10 
+                49 CD 10 83 C1 02 CD 10 49 42 CD 10 
+                61 60 B9 05 00 BA 7D 00 A0 C2 0C B4 
+                0C CD 10 41 CD 10 41 CD 10 83 E9 03 
+                CD 10 49 CD 10 83 C1 02 4A CD 10 83 
+                C2 02 CD 10 49 CD 10 83 C1 02 CD 10 
+                49 42 CD 10 61 60 B9 3B 01 BA 7D 00 
+                A0 C2 0C B4 0C CD 10 41 CD 10 41 CD 
+                10 83 E9 03 CD 10 49 CD 10 83 C1 02 
+                4A CD 10 83 C2 02 CD 10 49 CD 10 83 
+                C1 02 CD 10 49 42 CD 10 61 B8 A0 00 
+                BB 19 00 60 8B C8 8B D3 A0 C2 0C B4 
+                0C CD 10 41 CD 10 41 CD 10 83 E9 03 
+                CD 10 49 CD 10 83 C1 02 4A CD 10 83 
+                C2 02 CD 10 49 CD 10 83 C1 02 CD 10 
+                49 42 CD 10 61 83 C3 0A 83 FB 6E 7C 
+                C6 60 BB 00 00 BA 0A 00 A0 C3 0C B4 
+                0C B9 9B 00 B4 0C 8B C9 8B D2 8A C0 
+                CD 10 41 43 83 FB 0A 75 EF 61 60 BB 
+                00 00 BA 78 00 A0 C3 0C B4 0C B9 9B 
+                00 B4 0C 8B C9 8B D2 8A C0 CD 10 41 
+                43 83 FB 0A 75 EF 61 60 BB 00 00 BA 
+                3C 00 A0 C3 0C B4 0C B9 0A 00 B4 0C 
+                8B C9 8B D2 8A C0 CD 10 42 43 83 FB 
+                0A 75 EF 61 60 BB 00 00 BA 3C 00 A0 
+                C3 0C B4 0C B9 36 01 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 42 43 83 FB 0A 75 EF 
+                61 60 BB 00 00 BA 14 00 A0 C3 0C B4 
+                0C B9 15 00 B4 0C 8B C9 8B D2 8A C0 
+                CD 10 41 43 83 FB 0A 75 EF 61 60 BB 
+                00 00 BA 6E 00 A0 C3 0C B4 0C B9 14 
+                00 B4 0C 8B C9 8B D2 8A C0 CD 10 41 
+                43 83 FB 0A 75 EF 61 60 BB 00 00 BA 
+                14 00 A0 C3 0C B4 0C B9 22 01 B4 0C 
+                8B C9 8B D2 8A C0 CD 10 41 43 83 FB 
+                0A 75 EF 61 60 BB 00 00 BA 6E 00 A0 
+                C3 0C B4 0C B9 22 01 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 41 43 83 FB 0A 75 EF 
+                61 60 BA 3D 00 8B 3E BB 0C 4A B9 01 
+                00 8B 36 BB 0C 83 FF 00 74 18 4F 42 
+                60 B4 0C 8B C9 8B D2 A0 BE 0C CD 10 
+                61 4E 41 83 FE 00 74 DE EB EA 61 60 
+                BA 3D 00 8B 3E BB 0C 4A B9 38 01 8B 
+                36 BB 0C 83 FF 00 74 18 4F 42 60 B4 
+                0C 8B C9 8B D2 A0 BF 0C CD 10 61 4E 
+                41 83 FE 00 74 DE EB EA 61 C7 06 CB 
+                0C 01 00 C7 06 CF 0C 3D 00 C7 06 D3 
+                0C 38 01 C7 06 D7 0C 3D 00 C7 06 DB 
+                0C 01 00 C7 06 DF 0C 3D 00 C7 06 E3 
+                0C 38 01 C7 06 E7 0C 3D 00 C6 06 EB 
+                0C 04 C6 06 EC 0C 03 C7 06 19 0D FF 
+                EF E9 C2 0B 60 BB 00 00 BA 0A 00 A0 
+                C0 0C B4 0C B9 0A 00 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 42 43 83 FB 6E 75 EF 
+                61 60 BB 00 00 BA 0A 00 A0 C0 0C B4 
+                0C B9 36 01 B4 0C 8B C9 8B D2 8A C0 
+                CD 10 42 43 83 FB 6E 75 EF 61 60 BB 
+                00 00 BA 0A 00 A0 C0 0C B4 0C B9 14 
+                00 B4 0C 8B C9 8B D2 8A C0 CD 10 41 
+                43 81 FB 19 01 75 EE 61 60 BB 00 00 
+                BA 78 00 A0 C0 0C B4 0C B9 14 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 41 43 81 
+                FB 19 01 75 EE 61 60 BB 00 00 BA 14 
+                00 A0 C0 0C B4 0C B9 14 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 83 FB 28 
+                75 EF 61 60 BB 00 00 BA 46 00 A0 C0 
+                0C B4 0C B9 14 00 B4 0C 8B C9 8B D2 
+                8A C0 CD 10 42 43 83 FB 28 75 EF 61 
+                60 BB 00 00 BA 14 00 A0 C0 0C B4 0C 
+                B9 2C 01 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 42 43 83 FB 28 75 EF 61 60 BB 00 
+                00 BA 46 00 A0 C0 0C B4 0C B9 2C 01 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 42 43 
+                83 FB 28 75 EF 61 60 BB 00 00 BA 14 
+                00 A0 C0 0C B4 0C B9 14 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 41 43 81 FB 18 
+                01 75 EE 61 60 BB 00 00 BA 6E 00 A0 
+                C0 0C B4 0C B9 14 00 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 41 43 81 FB 18 01 75 
+                EE 61 60 BB 00 00 BA 3C 00 A0 C0 0C 
+                B4 0C B9 14 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 83 FB 64 75 EF 61 60 
+                BB 00 00 BA 46 00 A0 C0 0C B4 0C B9 
+                14 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                41 43 83 FB 64 75 EF 61 60 BB 00 00 
+                BA 3C 00 A0 C0 0C B4 0C B9 C8 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 41 43 83 
+                FB 64 75 EF 61 60 BB 00 00 BA 46 00 
+                A0 C0 0C B4 0C B9 C8 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 41 43 83 FB 64 75 
+                EF 61 60 BB 00 00 BA 1E 00 A0 C0 0C 
+                B4 0C B9 82 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 46 75 EF 61 60 
+                BB 00 00 BA 1E 00 A0 C0 0C B4 0C B9 
+                BE 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 46 75 EF 61 60 BB 00 00 
+                BA 15 00 A0 C3 0C B4 0C B9 BE 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 08 75 EF 61 60 BB 00 00 BA 15 00 
+                A0 C3 0C B4 0C B9 82 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 08 75 
+                EF 61 60 BB 00 00 BA 65 00 A0 C3 0C 
+                B4 0C B9 82 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 08 75 EF 61 60 
+                BB 00 00 BA 65 00 A0 C3 0C B4 0C B9 
+                BE 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 08 75 EF 61 60 BB 00 00 
+                BA 0B 00 A0 C3 0C B4 0C B9 2C 01 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 08 75 EF 61 60 BB 00 00 BA 0B 00 
+                A0 C3 0C B4 0C B9 14 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 08 75 
+                EF 61 60 BB 00 00 BA 6F 00 A0 C3 0C 
+                B4 0C B9 14 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 08 75 EF 61 60 
+                BB 00 00 BA 6F 00 A0 C3 0C B4 0C B9 
+                2C 01 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 08 75 EF 61 60 BB 00 00 
+                BA 3D 00 A0 C3 0C B4 0C B9 2C 01 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 08 75 EF 61 60 BB 00 00 BA 3D 00 
+                A0 C3 0C B4 0C B9 14 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 08 75 
+                EF 61 60 B9 A0 00 BA 05 00 A0 C2 0C 
+                B4 0C CD 10 41 CD 10 41 CD 10 83 E9 
+                03 CD 10 49 CD 10 83 C1 02 4A CD 10 
+                83 C2 02 CD 10 49 CD 10 83 C1 02 CD 
+                10 49 42 CD 10 61 60 B9 A0 00 BA 0F 
+                00 A0 C2 0C B4 0C CD 10 41 CD 10 41 
+                CD 10 83 E9 03 CD 10 49 CD 10 83 C1 
+                02 4A CD 10 83 C2 02 CD 10 49 CD 10 
+                83 C1 02 CD 10 49 42 CD 10 61 60 B9 
+                A0 00 BA 73 00 A0 C2 0C B4 0C CD 10 
+                41 CD 10 41 CD 10 83 E9 03 CD 10 49 
+                CD 10 83 C1 02 4A CD 10 83 C2 02 CD 
+                10 49 CD 10 83 C1 02 CD 10 49 42 CD 
+                10 61 60 B9 A0 00 BA 7D 00 A0 C2 0C 
+                B4 0C CD 10 41 CD 10 41 CD 10 83 E9 
+                03 CD 10 49 CD 10 83 C1 02 4A CD 10 
+                83 C2 02 CD 10 49 CD 10 83 C1 02 CD 
+                10 49 42 CD 10 61 B8 41 00 BB 23 00 
+                60 8B CB 8B D0 A0 C2 0C B4 0C CD 10 
+                41 CD 10 41 CD 10 83 E9 03 CD 10 49 
+                CD 10 83 C1 02 4A CD 10 83 C2 02 CD 
+                10 49 CD 10 83 C1 02 CD 10 49 42 CD 
+                10 61 83 C3 0A 81 FB 82 00 7C C5 BB 
+                C3 00 60 8B CB 8B D0 A0 C2 0C B4 0C 
+                CD 10 41 CD 10 41 CD 10 83 E9 03 CD 
+                10 49 CD 10 83 C1 02 4A CD 10 83 C2 
+                02 CD 10 49 CD 10 83 C1 02 CD 10 49 
+                42 CD 10 61 83 C3 0A 81 FB 18 01 7C 
+                C5 60 BA 41 00 8B 3E BB 0C 4A B9 01 
+                00 8B 36 BB 0C 83 FF 00 74 18 4F 42 
+                60 B4 0C 8B C9 8B D2 A0 BE 0C CD 10 
+                61 4E 41 83 FE 00 74 DE EB EA 61 60 
+                BA 41 00 8B 3E BB 0C 4A B9 38 01 8B 
+                36 BB 0C 83 FF 00 74 18 4F 42 60 B4 
+                0C 8B C9 8B D2 A0 BF 0C CD 10 61 4E 
+                41 83 FE 00 74 DE EB EA 61 C7 06 CB 
+                0C 01 00 C7 06 CF 0C 41 00 C7 06 D3 
+                0C 38 01 C7 06 D7 0C 41 00 C7 06 DB 
+                0C 01 00 C7 06 DF 0C 41 00 C7 06 E3 
+                0C 38 01 C7 06 E7 0C 41 00 C7 06 19 
+                0D FF AF E9 80 06 60 BB 00 00 BA 14 
+                00 A0 C0 0C B4 0C B9 0A 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 83 FB 28 
+                75 EF 61 60 BB 00 00 BA 14 00 A0 C0 
+                0C B4 0C B9 96 00 B4 0C 8B C9 8B D2 
+                8A C0 CD 10 42 43 83 FB 28 75 EF 61 
+                60 BB 00 00 BA 14 00 A0 C0 0C B4 0C 
+                B9 AA 00 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 42 43 83 FB 28 75 EF 61 60 BB 00 
+                00 BA 14 00 A0 C0 0C B4 0C B9 36 01 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 42 43 
+                83 FB 28 75 EF 61 60 BB 00 00 BA 46 
+                00 A0 C0 0C B4 0C B9 0A 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 83 FB 28 
+                75 EF 61 60 BB 00 00 BA 46 00 A0 C0 
+                0C B4 0C B9 96 00 B4 0C 8B C9 8B D2 
+                8A C0 CD 10 42 43 83 FB 28 75 EF 61 
+                60 BB 00 00 BA 46 00 A0 C0 0C B4 0C 
+                B9 AA 00 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 42 43 83 FB 28 75 EF 61 60 BB 00 
+                00 BA 46 00 A0 C0 0C B4 0C B9 36 01 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 42 43 
+                83 FB 28 75 EF 61 60 BB 00 00 BA 0A 
+                00 A0 C0 0C B4 0C B9 0A 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 41 43 81 FB 8D 
+                00 75 EE 61 60 BB 00 00 BA 3C 00 A0 
+                C0 0C B4 0C B9 0A 00 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 41 43 81 FB 8C 00 75 
+                EE 61 60 BB 00 00 BA 46 00 A0 C0 0C 
+                B4 0C B9 0A 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 81 FB 8C 00 75 EE 61 
+                60 BB 00 00 BA 78 00 A0 C0 0C B4 0C 
+                B9 0A 00 B4 0C 8B C9 8B D2 8A C0 CD 
+                10 41 43 81 FB 8C 00 75 EE 61 60 BB 
+                00 00 BA 0A 00 A0 C0 0C B4 0C B9 AA 
+                00 B4 0C 8B C9 8B D2 8A C0 CD 10 41 
+                43 81 FB 8D 00 75 EE 61 60 BB 00 00 
+                BA 3C 00 A0 C0 0C B4 0C B9 AA 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 41 43 81 
+                FB 8C 00 75 EE 61 60 BB 00 00 BA 46 
+                00 A0 C0 0C B4 0C B9 AA 00 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 41 43 81 FB 8C 
+                00 75 EE 61 60 BB 00 00 BA 78 00 A0 
+                C0 0C B4 0C B9 AA 00 B4 0C 8B C9 8B 
+                D2 8A C0 CD 10 41 43 81 FB 8C 00 75 
+                EE 61 60 BB 00 00 BA 14 00 A0 C0 0C 
+                B4 0C B9 9B 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 28 75 EF 61 60 
+                BB 00 00 BA 14 00 A0 C0 0C B4 0C B9 
+                A5 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 28 75 EF 61 60 BB 00 00 
+                BA 46 00 A0 C0 0C B4 0C B9 9B 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 28 75 EF 61 60 BB 00 00 BA 46 00 
+                A0 C0 0C B4 0C B9 A5 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 28 75 
+                EF 61 60 BB 00 00 BA 14 00 A0 C0 0C 
+                B4 0C B9 4B 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 1E 75 EF 61 60 
+                BB 00 00 BA 14 00 A0 C0 0C B4 0C B9 
+                55 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 1E 75 EF 61 60 BB 00 00 
+                BA 14 00 A0 C0 0C B4 0C B9 EB 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 1E 75 EF 61 60 BB 00 00 BA 14 00 
+                A0 C0 0C B4 0C B9 F5 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 1E 75 
+                EF 61 60 BB 00 00 BA 50 00 A0 C0 0C 
+                B4 0C B9 4B 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 1E 75 EF 61 60 
+                BB 00 00 BA 50 00 A0 C0 0C B4 0C B9 
+                55 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 1E 75 EF 61 60 BB 00 00 
+                BA 50 00 A0 C0 0C B4 0C B9 EB 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 42 43 83 
+                FB 1E 75 EF 61 60 BB 00 00 BA 50 00 
+                A0 C0 0C B4 0C B9 F5 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 42 43 83 FB 1E 75 
+                EF 61 60 BB 00 00 BA 0A 00 A0 C3 0C 
+                B4 0C B9 01 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 83 FB 0A 75 EF 61 60 
+                BB 00 00 BA 0A 00 A0 C3 0C B4 0C B9 
+                36 01 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                41 43 83 FB 0A 75 EF 61 60 BB 00 00 
+                BA 0A 00 A0 C3 0C B4 0C B9 96 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 41 43 83 
+                FB 14 75 EF 61 60 BB 00 00 BA 0A 00 
+                A0 C0 0C B4 0C B9 9F 00 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 41 43 83 FB 02 75 
+                EF 61 60 BB 00 00 BA 3D 00 A0 C3 0C 
+                B4 0C B9 0A 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 83 FB 09 75 EF 61 60 
+                BB 00 00 BA 3D 00 A0 C3 0C B4 0C B9 
+                36 01 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                42 43 83 FB 09 75 EF 61 60 BB 00 00 
+                BA 78 00 A0 C3 0C B4 0C B9 01 00 B4 
+                0C 8B C9 8B D2 8A C0 CD 10 41 43 83 
+                FB 0A 75 EF 61 60 BB 00 00 BA 78 00 
+                A0 C3 0C B4 0C B9 36 01 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 41 43 83 FB 0A 75 
+                EF 61 60 BB 00 00 BA 78 00 A0 C3 0C 
+                B4 0C B9 96 00 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 83 FB 14 75 EF 61 60 
+                BB 00 00 BA 78 00 A0 C0 0C B4 0C B9 
+                9F 00 B4 0C 8B C9 8B D2 8A C0 CD 10 
+                41 43 83 FB 02 75 EF 61 B8 A0 00 BB 
+                19 00 60 8B C8 8B D3 A0 C2 0C B4 0C 
+                CD 10 41 CD 10 41 CD 10 83 E9 03 CD 
+                10 49 CD 10 83 C1 02 4A CD 10 83 C2 
+                02 CD 10 49 CD 10 83 C1 02 CD 10 49 
+                42 CD 10 61 83 C3 0A 83 FB 6E 7C C6 
+                B8 50 00 BB 0F 00 60 8B C8 8B D3 A0 
+                C2 0C B4 0C CD 10 41 CD 10 41 CD 10 
+                83 E9 03 CD 10 49 CD 10 83 C1 02 4A 
+                CD 10 83 C2 02 CD 10 49 CD 10 83 C1 
+                02 CD 10 49 42 CD 10 61 83 C3 0A 83 
+                FB 74 7C C6 B8 F0 00 BB 0F 00 60 8B 
+                C8 8B D3 A0 C2 0C B4 0C CD 10 41 CD 
+                10 41 CD 10 83 E9 03 CD 10 49 CD 10 
+                83 C1 02 4A CD 10 83 C2 02 CD 10 49 
+                CD 10 83 C1 02 CD 10 49 42 CD 10 61 
+                83 C3 0A 83 FB 74 7C C6 B8 5A 00 BB 
+                7D 00 60 8B C8 8B D3 A0 C2 0C B4 0C 
+                CD 10 41 CD 10 41 CD 10 83 E9 03 CD 
+                10 49 CD 10 83 C1 02 4A CD 10 83 C2 
+                02 CD 10 49 CD 10 83 C1 02 CD 10 49 
+                42 CD 10 61 05 14 00 3D F1 00 7C C6 
+                60 BA 01 00 8B 3E BB 0C 4A B9 01 00 
+                8B 36 BB 0C 83 FF 00 74 18 4F 42 60 
+                B4 0C 8B C9 8B D2 A0 BE 0C CD 10 61 
+                4E 41 83 FE 00 74 DE EB EA 61 60 BA 
+                01 00 8B 3E BB 0C 4A B9 38 01 8B 36 
+                BB 0C 83 FF 00 74 18 4F 42 60 B4 0C 
+                8B C9 8B D2 A0 BF 0C CD 10 61 4E 41 
+                83 FE 00 74 DE EB EA 61 C7 06 CB 0C 
+                01 00 C7 06 CF 0C 01 00 C7 06 D3 0C 
+                38 01 C7 06 D7 0C 01 00 C7 06 DB 0C 
+                01 00 C7 06 DF 0C 01 00 C7 06 E3 0C 
+                38 01 C7 06 E7 0C 01 00 C7 06 19 0D 
+                FF 5F C6 06 0D 0D 00 C6 06 13 0D 00 
+                C7 06 ED 0C 00 00 C7 06 EF 0C 00 00 
+                C6 06 F1 0C 00 C6 06 F2 0C 00 C6 06 
+                28 0D 0B C6 06 2A 0D 0B C6 06 29 0D 
+                15 C6 06 2B 0D 16 B4 02 B7 00 B2 00 
+                B6 17 CD 10 B4 09 BA 9D 00 CD 21 B4 
+                02 B7 00 B2 00 B6 14 CD 10 B4 09 BA 
+                8E 0C CD 21 A0 16 0D B4 00 B1 0A F6 
+                F1 8A DC B4 02 B7 00 B2 0F B6 11 CD 
+                10 8A D0 80 C2 30 CD 21 B4 02 B7 00 
+                B2 0F 80 C2 01 B6 11 CD 10 8A D3 80 
+                C2 30 CD 21 B4 02 B7 00 B2 11 B6 11 
+                CD 10 B4 09 BA 3C 00 CD 21 A0 17 0D 
+                B4 00 B1 0A F6 F1 8A DC B4 02 B7 00 
+                B2 12 B6 11 CD 10 8A D0 80 C2 30 CD 
+                21 B4 02 B7 00 B2 12 80 C2 01 B6 11 
+                CD 10 8A D3 80 C2 30 CD 21 60 B4 0F 
+                CD 10 B4 02 B6 15 B2 00 CD 10 61 B4 
+                09 BA 02 0D CD 21 60 B4 0F CD 10 B4 
+                02 B6 16 B2 00 CD 10 61 B4 09 BA F5 
+                0C CD 21                            
+[ 249]    214A:                                       lopm1:
+[ 250]    214A: A0 EB 0C                              mov al,dirc1
+[ 251]    214D: 3C 03                                 cmp al,3
+[ 252]    214F: 74 06                                 je myri
+[ 253]    2151: 3C 04                                 cmp al,4
+[ 254]    2153: 74 06                                 je myle
+[ 255]    2155: EB 08                                 jmp tothehome
+[ 256]    2157: B0 04                                 myri:   mov al,4
+[ 257]    2159: EB 04                                 jmp tothehome
+[ 258]    215B: B0 03                                 myle:   mov al,3
+[ 259]    215D: EB 00                                 jmp tothehome
+[ 260]        :                                       
+[ 261]    215F:                                       tothehome:
+[ 262]    215F: A2 25 0D                              mov SENDDATA,al
+[ 263]        :                                       ;input
+[ 264]    2162: B4 01                                 mov ah,1
+[ 265]    2164: CD 16                                 int 16h
+[ 266]    2166: 75 03 E9 84 04                        jz skip1  ; no input
+[ 267]        :                                       ;else there are input ,take it and clear buffer
+[ 268]    216B: 50                                    PUSH AX
+[ 269]    216C: B4 00                                 mov ah,0
+[ 270]    216E: CD 16                                 int 16h
+[ 271]    2170: 58                                    POP AX
+[ 272]    2171: 3A 26 C6 0C 74 2B 3A 26 C7 0C 74 32   caldirc
+                3A 26 C5 0C 74 46 3A 26 C4 0C 74 33 
+                3A 06 C8 0C 74 47 3A 06 CA 0C 75 03 
+                E9 49 04 3C 14 7C 03 E9 02 04 E9 4B 
+                04 C6 06 EB 0C 01 C6 06 25 0D 01 E9 
+                3E 04 C6 06 EB 0C 02 C6 06 25 0D 02 
+                E9 31 04 C6 06 EB 0C 03 C6 06 25 0D 
+                04 E9 24 04 C6 06 EB 0C 04 C6 06 25 
+                0D 03 E9 17 04 C6 06 25 0D 05 80 3E 
+                11 0D 01 75 10 80 3E F1 0C 00 75 03 
+                E9 DD 01 FE 0E F1 0C EB 10 80 3E F2 
+                0C 00 75 03 E9 CD 01 FE 0E F2 0C EB 
+                00 8B 1E CF 0C 03 1E BB 0C 83 C3 01 
+                83 2E CF 0C 01 BE 00 00 83 06 CF 0C 
+                01 3B 1E CF 0C 75 11 8B 16 CF 0C 2B 
+                16 BB 0C 83 EA 02 89 16 CF 0C EB 46 
+                3B 36 CB 0C 74 DB B4 0D 8B CE 8B 16 
+                CF 0C CD 10 3C 00 75 07 A0 BD 0C 2C 
+                01 EB 18 3A 06 BE 0C 74 0D 3A 06 BF 
+                0C 75 0C C6 06 0F 0D 01 EB 05 C6 06 
+                0E 0D 01 04 01 B4 0C 8B CE 8B 16 CF 
+                0C 8A C0 CD 10 83 C6 01 EB BA 8B 36 
+                CB 0C 03 36 BB 0C 83 C6 01 83 06 CF 
+                0C 01 3B 1E CF 0C 75 2A 8B 16 CF 0C 
+                2B 16 BB 0C 83 EA 01 89 16 CF 0C 8B 
+                1E CF 0C 8B 16 CB 0C 03 16 BB 0C 83 
+                C2 01 89 16 CB 0C C7 06 CF 0C 00 00 
+                EB 46 3B 36 B7 0C 74 BA B4 0D 8B CE 
+                8B 16 CF 0C CD 10 3C 00 75 07 A0 BD 
+                0C 2C 01 EB 18 3A 06 BE 0C 74 0D 3A 
+                06 BF 0C 75 0C C6 06 0F 0D 01 EB 05 
+                C6 06 0E 0D 01 04 01 B4 0C 8B CE 8B 
+                16 CF 0C 8A C0 CD 10 83 C6 01 EB BA 
+                8B 36 CB 0C 2B 36 BB 0C 83 EE 01 83 
+                06 CF 0C 01 3B 1E CF 0C 75 0E 8B 16 
+                CF 0C 03 16 BB 0C 89 16 CF 0C EB 46 
+                3B 36 CB 0C 74 D6 B4 0D 8B CE 8B 16 
+                CF 0C CD 10 3C 00 75 07 A0 BD 0C 2C 
+                01 EB 18 3A 06 BE 0C 74 0D 3A 06 BF 
+                0C 75 0C C6 06 0F 0D 01 EB 05 C6 06 
+                0E 0D 01 04 01 B4 0C 8B CE 8B 16 CF 
+                0C 8A C0 CD 10 83 C6 01 EB BA 8B 36 
+                CB 0C 2B 36 BB 0C 83 EE 01 83 06 CF 
+                0C 01 8B 3E CF 0C 3B 3E B9 0C 75 02 
+                EB 4B 3B 36 CB 0C 74 DE B4 0D 8B CE 
+                8B 16 CF 0C CD 10 3C 00 75 07 A0 BD 
+                0C 2C 01 EB 18 3A 06 BE 0C 74 0D 3A 
+                06 BF 0C 75 0C C6 06 0F 0D 01 EB 05 
+                C6 06 0E 0D 01 04 01 B4 0C 8B CE 8B 
+                16 CF 0C 8A C0 CD 10 83 C6 01 EB BA 
+                C6 06 10 0D 01 80 3E 11 0D 01 75 1C 
+                80 3E 0F 0D 01 75 2F 83 3E EF 0C 06 
+                7C 06 FF 0E 00 00 EB 22 C7 06 EF 0C 
+                00 00 EB 1A 80 3E 0E 0D 01 75 13 83 
+                3E ED 0C 06 7C 06 FF 0E 00 00 EB 06 
+                C7 06 ED 0C 00 00 C6 06 0E 0D 00 C6 
+                06 0F 0D 00 8B 36 DB 0C 89 36 CB 0C 
+                8B 36 DF 0C 89 36 CF 0C 80 3E 10 0D 
+                01 75 03 E9 5B 01 8B 1E DF 0C 03 1E 
+                BB 0C 83 C3 01 83 2E DF 0C 01 BE 00 
+                00 83 06 DF 0C 01 3B 1E DF 0C 75 11 
+                8B 16 DF 0C 2B 16 BB 0C 83 EA 02 89 
+                16 DF 0C EB 2B 3B 36 DB 0C 74 DB B4 
+                0D 8B CE 8B 16 DF 0C CD 10 3A 06 BD 
+                0C 75 02 B0 01 2C 01 B4 0C 8B CE 8B 
+                16 DF 0C 8A C0 CD 10 83 C6 01 EB D5 
+                8B 36 DB 0C 03 36 BB 0C 83 C6 01 83 
+                06 DF 0C 01 3B 1E DF 0C 75 2A 8B 16 
+                DF 0C 2B 16 BB 0C 83 EA 01 89 16 DF 
+                0C 8B 1E DF 0C 8B 16 DB 0C 03 16 BB 
+                0C 83 C2 01 89 16 DB 0C C7 06 DF 0C 
+                00 00 EB 2B 3B 36 B7 0C 74 BA B4 0D 
+                8B CE 8B 16 DF 0C CD 10 3A 06 BD 0C 
+                75 02 B0 01 2C 01 B4 0C 8B CE 8B 16 
+                DF 0C 8A C0 CD 10 83 C6 01 EB D5 8B 
+                36 DB 0C 2B 36 BB 0C 83 EE 01 83 06 
+                DF 0C 01 3B 1E DF 0C 75 0E 8B 16 DF 
+                0C 03 16 BB 0C 89 16 DF 0C EB 2B 3B 
+                36 DB 0C 74 D6 B4 0D 8B CE 8B 16 DF 
+                0C CD 10 3A 06 BD 0C 75 02 B0 01 2C 
+                01 B4 0C 8B CE 8B 16 DF 0C 8A C0 CD 
+                10 83 C6 01 EB D5 8B 36 DB 0C 2B 36 
+                BB 0C 83 EE 01 83 06 DF 0C 01 8B 3E 
+                DF 0C 3B 3E B9 0C 75 02 EB 2B 3B 36 
+                DB 0C 74 DE B4 0D 8B CE 8B 16 DF 0C 
+                CD 10 3A 06 BD 0C 75 02 B0 01 2C 01 
+                B4 0C 8B CE 8B 16 DF 0C 8A C0 CD 10 
+                83 C6 01 EB D5 C6 06 10 0D 00 8B 36 
+                CB 0C 89 36 DB 0C 8B 36 CF 0C 89 36 
+                DF 0C EB 4C A2 25 0D 60 B4 0F CD 10 
+                B4 02 8A 36 29 0D 8A 16 28 0D CD 10 
+                61 B4 02 8A 16 25 0D CD 21 60 B4 03 
+                B7 00 CD 10 88 36 29 0D 88 16 28 0D 
+                61 80 3E 28 0D 27 7C 18 C6 06 28 0D 
+                0B C6 06 29 0D 15 EB 0C C6 06 0D 0D 
+                01 C6 06 25 0D 06 EB 00             
+[ 273]    25ED: EB 00                                 jmp skip1
+[ 274]    25EF:                                       skip1:
+[ 275]        :                                       ;send & recive  info to another player
+[ 276]    25EF: 60 BA FD 03 EC 24 20 74 FB 80 3E 25   caldirc2
+                0D 0D 74 0E BA F8 03 A0 25 0D EE C6 
+                06 25 0D 00 EB 0C BA F8 03 A0 25 0D 
+                EE C6 06 25 0D 0A 61 60 BA FD 03 EC 
+                24 01 74 09 BA F8 03 EC A2 26 0D EB 
+                05 C6 06 26 0D 00 61 80 3E 26 0D 04 
+                7E 23 80 3E 26 0D 05 74 25 80 3E 26 
+                0D 06 74 0D 80 3E 26 0D 00 74 03 E9 
+                DB 03 E9 6E 04 C6 06 0D 0D 01 E9 66 
+                04 A0 26 0D A2 EC 0C E9 5D 04 80 3E 
+                12 0D 01 75 10 80 3E F1 0C 00 75 03 
+                E9 DD 01 FE 0E F1 0C EB 10 80 3E F2 
+                0C 00 75 03 E9 CD 01 FE 0E F2 0C EB 
+                00 8B 1E D7 0C 03 1E BB 0C 83 C3 01 
+                83 2E D7 0C 01 BE 00 00 83 06 D7 0C 
+                01 3B 1E D7 0C 75 11 8B 16 D7 0C 2B 
+                16 BB 0C 83 EA 02 89 16 D7 0C EB 46 
+                3B 36 D3 0C 74 DB B4 0D 8B CE 8B 16 
+                D7 0C CD 10 3C 00 75 07 A0 BD 0C 2C 
+                01 EB 18 3A 06 BE 0C 74 0D 3A 06 BF 
+                0C 75 0C C6 06 0F 0D 01 EB 05 C6 06 
+                0E 0D 01 04 01 B4 0C 8B CE 8B 16 D7 
+                0C 8A C0 CD 10 83 C6 01 EB BA 8B 36 
+                D3 0C 03 36 BB 0C 83 C6 01 83 06 D7 
+                0C 01 3B 1E D7 0C 75 2A 8B 16 D7 0C 
+                2B 16 BB 0C 83 EA 01 89 16 D7 0C 8B 
+                1E D7 0C 8B 16 D3 0C 03 16 BB 0C 83 
+                C2 01 89 16 D3 0C C7 06 D7 0C 00 00 
+                EB 46 3B 36 B7 0C 74 BA B4 0D 8B CE 
+                8B 16 D7 0C CD 10 3C 00 75 07 A0 BD 
+                0C 2C 01 EB 18 3A 06 BE 0C 74 0D 3A 
+                06 BF 0C 75 0C C6 06 0F 0D 01 EB 05 
+                C6 06 0E 0D 01 04 01 B4 0C 8B CE 8B 
+                16 D7 0C 8A C0 CD 10 83 C6 01 EB BA 
+                8B 36 D3 0C 2B 36 BB 0C 83 EE 01 83 
+                06 D7 0C 01 3B 1E D7 0C 75 0E 8B 16 
+                D7 0C 03 16 BB 0C 89 16 D7 0C EB 46 
+                3B 36 D3 0C 74 D6 B4 0D 8B CE 8B 16 
+                D7 0C CD 10 3C 00 75 07 A0 BD 0C 2C 
+                01 EB 18 3A 06 BE 0C 74 0D 3A 06 BF 
+                0C 75 0C C6 06 0F 0D 01 EB 05 C6 06 
+                0E 0D 01 04 01 B4 0C 8B CE 8B 16 D7 
+                0C 8A C0 CD 10 83 C6 01 EB BA 8B 36 
+                D3 0C 2B 36 BB 0C 83 EE 01 83 06 D7 
+                0C 01 8B 3E D7 0C 3B 3E B9 0C 75 02 
+                EB 4B 3B 36 D3 0C 74 DE B4 0D 8B CE 
+                8B 16 D7 0C CD 10 3C 00 75 07 A0 BD 
+                0C 2C 01 EB 18 3A 06 BE 0C 74 0D 3A 
+                06 BF 0C 75 0C C6 06 0F 0D 01 EB 05 
+                C6 06 0E 0D 01 04 01 B4 0C 8B CE 8B 
+                16 D7 0C 8A C0 CD 10 83 C6 01 EB BA 
+                C6 06 10 0D 01 80 3E 12 0D 01 75 1C 
+                80 3E 0F 0D 01 75 2F 83 3E EF 0C 06 
+                7C 06 FF 0E 00 00 EB 22 C7 06 EF 0C 
+                00 00 EB 1A 80 3E 0E 0D 01 75 13 83 
+                3E ED 0C 06 7C 06 FF 0E 00 00 EB 06 
+                C7 06 ED 0C 00 00 C6 06 0E 0D 00 C6 
+                06 0F 0D 00 8B 36 E3 0C 89 36 D3 0C 
+                8B 36 E7 0C 89 36 D7 0C 80 3E 10 0D 
+                01 75 03 E9 5B 01 8B 1E E7 0C 03 1E 
+                BB 0C 83 C3 01 83 2E E7 0C 01 BE 00 
+                00 83 06 E7 0C 01 3B 1E E7 0C 75 11 
+                8B 16 E7 0C 2B 16 BB 0C 83 EA 02 89 
+                16 E7 0C EB 2B 3B 36 E3 0C 74 DB B4 
+                0D 8B CE 8B 16 E7 0C CD 10 3A 06 BD 
+                0C 75 02 B0 01 2C 01 B4 0C 8B CE 8B 
+                16 E7 0C 8A C0 CD 10 83 C6 01 EB D5 
+                8B 36 E3 0C 03 36 BB 0C 83 C6 01 83 
+                06 E7 0C 01 3B 1E E7 0C 75 2A 8B 16 
+                E7 0C 2B 16 BB 0C 83 EA 01 89 16 E7 
+                0C 8B 1E E7 0C 8B 16 E3 0C 03 16 BB 
+                0C 83 C2 01 89 16 E3 0C C7 06 E7 0C 
+                00 00 EB 2B 3B 36 B7 0C 74 BA B4 0D 
+                8B CE 8B 16 E7 0C CD 10 3A 06 BD 0C 
+                75 02 B0 01 2C 01 B4 0C 8B CE 8B 16 
+                E7 0C 8A C0 CD 10 83 C6 01 EB D5 8B 
+                36 E3 0C 2B 36 BB 0C 83 EE 01 83 06 
+                E7 0C 01 3B 1E E7 0C 75 0E 8B 16 E7 
+                0C 03 16 BB 0C 89 16 E7 0C EB 2B 3B 
+                36 E3 0C 74 D6 B4 0D 8B CE 8B 16 E7 
+                0C CD 10 3A 06 BD 0C 75 02 B0 01 2C 
+                01 B4 0C 8B CE 8B 16 E7 0C 8A C0 CD 
+                10 83 C6 01 EB D5 8B 36 E3 0C 2B 36 
+                BB 0C 83 EE 01 83 06 E7 0C 01 8B 3E 
+                E7 0C 3B 3E B9 0C 75 02 EB 2B 3B 36 
+                E3 0C 74 DE B4 0D 8B CE 8B 16 E7 0C 
+                CD 10 3A 06 BD 0C 75 02 B0 01 2C 01 
+                B4 0C 8B CE 8B 16 E7 0C 8A C0 CD 10 
+                83 C6 01 EB D5 C6 06 10 0D 00 8B 36 
+                D3 0C 89 36 E3 0C 8B 36 D7 0C 89 36 
+                E7 0C E9 96 00 C6 06 2B 0D 16 60 A0 
+                2A 0D 3C 4F 74 3C 8A 26 2B 0D 80 FC 
+                0B 74 07 80 FC 17 74 18 EB 37 B4 06 
+                B0 01 B7 07 B5 01 B1 00 B6 0B B2 4F 
+                CD 10 FE 0E 2B 0D EB 21 B4 06 B0 01 
+                B7 07 B5 0E B1 00 B6 16 B2 4F CD 10 
+                FE 0E 2B 0D EB 0B FE 06 2B 0D C6 06 
+                2A 0D 00 EB B9 8A 2E 2A 0D 8A 0E 2B 
+                0D 60 B4 0F CD 10 B4 02 8A F1 8A D5 
+                CD 10 61 B4 02 8A 16 26 0D CD 21 61 
+                60 B4 03 B7 00 CD 10 88 36 2B 0D 88 
+                16 2A 0D 61 80 3E 2A 0D 26 7E 0C C6 
+                06 2A 0D 0B C6 06 2B 0D 16 EB 00    
+[ 277]        :                                       ;CHECK IF THE GAME END
+[ 278]    2AC2: A0 0D 0D                              mov  al,endflag
+[ 279]    2AC5: 3C 01                                 cmp al,1
+[ 280]    2AC7: 75 03 E9 3E E3                        jz retu
+[ 281]    2ACC: 60 8B 16 CF 0C 8B 3E BB 0C 4A 8B 0E   MovePlayer ;calculate new postion for players
+                CB 0C 8B 36 BB 0C 83 FF 00 74 17 4F 
+                42 60 B4 0C 8B C9 8B D2 B0 00 CD 10 
+                61 4E 41 83 FE 00 74 DE EB EB 61 8B 
+                0E CB 0C 8B 16 CF 0C 8A 26 EB 0C 80 
+                FC 01 74 18 80 FC 02 75 03 E9 FD 00 
+                80 FC 03 75 03 E9 E0 02 80 FC 04 75 
+                03 E9 E8 01 BB 00 00 B8 00 00 4A 60 
+                60 53 BB 00 00 B4 0D BB 00 00 8B C9 
+                8B D2 CD 10 3A 06 C0 0C 75 03 E9 C5 
+                00 41 5B 43 3B 1E BB 0C 7C DF 61 BB 
+                00 00 53 BB 00 00 B4 0D BB 00 00 8B 
+                C9 8B D2 CD 10 3A 06 C2 0C 74 31 3A 
+                06 C1 0C 74 24 3A 06 C3 0C 74 67 3A 
+                06 BF 0C 75 03 E9 86 00 3A 06 BE 0C 
+                75 03 E9 7D 00 41 5B 43 3B 1E BB 0C 
+                7C C4 61 EB 7D 5B 61 BB 01 00 EB 76 
+                83 EA 04 83 E9 02 89 0E 1D 0D 89 16 
+                21 0D 60 8B 16 21 0D BF 05 00 4A 8B 
+                0E 1D 0D BE 05 00 83 FF 00 74 17 4F 
+                42 60 B4 0C 8B C9 8B D2 B0 00 CD 10 
+                61 4E 41 83 FE 00 74 DF EB EB 61 5B 
+                61 BB 02 00 EB 34 5B 61 60 BB 00 00 
+                8B D2 A0 C0 0C B4 0C 8B C9 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 41 43 3B 1E BB 
+                0C 75 EE 61 2B 16 BB 0C EB 0C 5B 61 
+                BB 04 00 42 EB 04 5B 61 61 42 E9 E3 
+                02 BB 00 00 B8 00 00 42 60 60 03 16 
+                BB 0C 4A 53 BB 00 00 B4 0D BB 00 00 
+                8B C9 8B D2 CD 10 3A 06 C0 0C 75 03 
+                E9 CF 00 41 5B 43 3B 1E BB 0C 7C DF 
+                61 BB 00 00 03 16 BB 0C 4A 53 BB 00 
+                00 B4 0D BB 00 00 8B C9 8B D2 CD 10 
+                3A 06 C0 0C 75 03 E9 A5 00 3A 06 C2 
+                0C 74 2E 3A 06 C1 0C 74 21 3A 06 C3 
+                0C 74 61 3A 06 BF 0C 75 03 E9 82 00 
+                3A 06 BE 0C 74 7C 41 5B 43 3B 1E BB 
+                0C 7C BE 61 EB 7B 5B 61 BB 01 00 EB 
+                74 83 E9 02 89 0E 1D 0D 89 16 21 0D 
+                60 8B 16 21 0D BF 05 00 4A 8B 0E 1D 
+                0D BE 05 00 83 FF 00 74 17 4F 42 60 
+                B4 0C 8B C9 8B D2 B0 00 CD 10 61 4E 
+                41 83 FE 00 74 DF EB EB 61 5B 61 BB 
+                02 00 EB 35 5B 61 03 16 BB 0C 4A 60 
+                BB 00 00 8B D2 A0 C0 0C B4 0C 8B C9 
+                B4 0C 8B C9 8B D2 8A C0 CD 10 41 43 
+                3B 1E BB 0C 75 EE 61 42 EB 0B 5B 61 
+                BB 04 00 4A EB 03 5B 61 4A E9 E8 01 
+                BB 00 00 B8 00 00 49 60 60 53 BB 00 
+                00 B4 0D BB 00 00 8B C9 8B D2 CD 10 
+                3A 06 C0 0C 75 03 E9 C9 00 41 5B 43 
+                3B 1E BB 0C 7C DF 61 BB 00 00 53 BB 
+                00 00 B4 0D BB 00 00 8B C9 8B D2 CD 
+                10 3A 06 C0 0C 75 03 E9 A4 00 3A 06 
+                C2 0C 74 2E 3A 06 C1 0C 74 21 3A 06 
+                C3 0C 74 62 3A 06 BF 0C 75 03 E9 81 
+                00 3A 06 BE 0C 74 7B 42 5B 43 3B 1E 
+                BB 0C 7C BE 61 EB 7A 5B 61 BB 01 00 
+                EB 73 83 E9 05 4A 89 0E 1D 0D 89 16 
+                21 0D 60 8B 16 21 0D BF 05 00 4A 8B 
+                0E 1D 0D BE 05 00 83 FF 00 74 17 4F 
+                42 60 B4 0C 8B C9 8B D2 B0 00 CD 10 
+                61 4E 41 83 FE 00 74 DF EB EB 61 5B 
+                61 BB 02 00 EB 33 5B 61 60 BB 00 00 
+                8B D2 A0 C0 0C B4 0C 8B C9 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 3B 1E BB 
+                0C 75 EE 61 2B 0E BB 0C EB 0B 5B 61 
+                BB 04 00 41 EB 03 5B 61 41 E9 F8 00 
+                BB 00 00 B8 00 00 41 60 60 03 0E BB 
+                0C 49 53 BB 00 00 B4 0D BB 00 00 8B 
+                C9 8B D2 CD 10 3A 06 C0 0C 75 03 E9 
+                CD 00 42 5B 43 3B 1E BB 0C 7C DF 61 
+                BB 00 00 03 0E BB 0C 49 53 BB 00 00 
+                B4 0D BB 00 00 8B C9 8B D2 CD 10 3A 
+                06 C0 0C 75 03 E9 A3 00 3A 06 C2 0C 
+                74 2E 3A 06 C1 0C 74 21 3A 06 C3 0C 
+                74 5F 3A 06 BF 0C 75 03 E9 80 00 3A 
+                06 BE 0C 74 7A 42 5B 43 3B 1E BB 0C 
+                7C BE 61 EB 79 5B 61 BB 01 00 EB 72 
+                4A 89 0E 1D 0D 89 16 21 0D 60 8B 16 
+                21 0D BF 05 00 4A 8B 0E 1D 0D BE 05 
+                00 83 FF 00 74 17 4F 42 60 B4 0C 8B 
+                C9 8B D2 B0 00 CD 10 61 4E 41 83 FE 
+                00 74 DF EB EB 61 5B 61 BB 02 00 EB 
+                35 5B 61 03 0E BB 0C 49 60 BB 00 00 
+                8B D2 A0 C0 0C B4 0C 8B C9 B4 0C 8B 
+                C9 8B D2 8A C0 CD 10 42 43 3B 1E BB 
+                0C 75 EE 61 41 EB 0B 5B 61 BB 04 00 
+                49 EB 03 5B 61 49 EB 00 89 0E CB 0C 
+                89 16 CF 0C 89 0E DB 0C 89 16 DF 0C 
+                60 8B 16 CF 0C 8B 3E BB 0C 4A 8B 0E 
+                CB 0C 8B 36 BB 0C 83 FF 00 74 18 4F 
+                42 60 B4 0C 8B C9 8B D2 A0 BE 0C CD 
+                10 61 4E 41 83 FE 00 74 DD EB EA 61 
+                83 FB 01 74 0F 83 FB 02 74 10 83 FB 
+                04 75 03 E9 93 04 EB 0C FF 06 ED 0C 
+                EB 06 FE 06 F1 0C EB 00 60 8B 16 D7 
+                0C 8B 3E BB 0C 4A 8B 0E D3 0C 8B 36 
+                BB 0C 83 FF 00 74 17 4F 42 60 B4 0C 
+                8B C9 8B D2 B0 00 CD 10 61 4E 41 83 
+                FE 00 74 DE EB EB 61 8B 0E D3 0C 8B 
+                16 D7 0C 8A 26 EC 0C 80 FC 01 74 18 
+                80 FC 02 75 03 E9 FD 00 80 FC 03 75 
+                03 E9 E0 02 80 FC 04 75 03 E9 E8 01 
+                BB 00 00 B8 00 00 4A 60 60 53 BB 00 
+                00 B4 0D BB 00 00 8B C9 8B D2 CD 10 
+                3A 06 C0 0C 75 03 E9 C5 00 41 5B 43 
+                3B 1E BB 0C 7C DF 61 BB 00 00 53 BB 
+                00 00 B4 0D BB 00 00 8B C9 8B D2 CD 
+                10 3A 06 C2 0C 74 31 3A 06 C1 0C 74 
+                24 3A 06 C3 0C 74 67 3A 06 BF 0C 75 
+                03 E9 86 00 3A 06 BE 0C 75 03 E9 7D 
+                00 41 5B 43 3B 1E BB 0C 7C C4 61 EB 
+                7D 5B 61 BB 01 00 EB 76 83 EA 04 83 
+                E9 02 89 0E 1D 0D 89 16 21 0D 60 8B 
+                16 21 0D BF 05 00 4A 8B 0E 1D 0D BE 
+                05 00 83 FF 00 74 17 4F 42 60 B4 0C 
+                8B C9 8B D2 B0 00 CD 10 61 4E 41 83 
+                FE 00 74 DF EB EB 61 5B 61 BB 02 00 
+                EB 34 5B 61 60 BB 00 00 8B D2 A0 C0 
+                0C B4 0C 8B C9 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 41 43 3B 1E BB 0C 75 EE 61 
+                2B 16 BB 0C EB 0C 5B 61 BB 04 00 42 
+                EB 04 5B 61 61 42 E9 E3 02 BB 00 00 
+                B8 00 00 42 60 60 03 16 BB 0C 4A 53 
+                BB 00 00 B4 0D BB 00 00 8B C9 8B D2 
+                CD 10 3A 06 C0 0C 75 03 E9 CF 00 41 
+                5B 43 3B 1E BB 0C 7C DF 61 BB 00 00 
+                03 16 BB 0C 4A 53 BB 00 00 B4 0D BB 
+                00 00 8B C9 8B D2 CD 10 3A 06 C0 0C 
+                75 03 E9 A5 00 3A 06 C2 0C 74 2E 3A 
+                06 C1 0C 74 21 3A 06 C3 0C 74 61 3A 
+                06 BF 0C 75 03 E9 82 00 3A 06 BE 0C 
+                74 7C 41 5B 43 3B 1E BB 0C 7C BE 61 
+                EB 7B 5B 61 BB 01 00 EB 74 83 E9 02 
+                89 0E 1D 0D 89 16 21 0D 60 8B 16 21 
+                0D BF 05 00 4A 8B 0E 1D 0D BE 05 00 
+                83 FF 00 74 17 4F 42 60 B4 0C 8B C9 
+                8B D2 B0 00 CD 10 61 4E 41 83 FE 00 
+                74 DF EB EB 61 5B 61 BB 02 00 EB 35 
+                5B 61 03 16 BB 0C 4A 60 BB 00 00 8B 
+                D2 A0 C0 0C B4 0C 8B C9 B4 0C 8B C9 
+                8B D2 8A C0 CD 10 41 43 3B 1E BB 0C 
+                75 EE 61 42 EB 0B 5B 61 BB 04 00 4A 
+                EB 03 5B 61 4A E9 E8 01 BB 00 00 B8 
+                00 00 49 60 60 53 BB 00 00 B4 0D BB 
+                00 00 8B C9 8B D2 CD 10 3A 06 C0 0C 
+                75 03 E9 C9 00 41 5B 43 3B 1E BB 0C 
+                7C DF 61 BB 00 00 53 BB 00 00 B4 0D 
+                BB 00 00 8B C9 8B D2 CD 10 3A 06 C0 
+                0C 75 03 E9 A4 00 3A 06 C2 0C 74 2E 
+                3A 06 C1 0C 74 21 3A 06 C3 0C 74 62 
+                3A 06 BF 0C 75 03 E9 81 00 3A 06 BE 
+                0C 74 7B 42 5B 43 3B 1E BB 0C 7C BE 
+                61 EB 7A 5B 61 BB 01 00 EB 73 83 E9 
+                05 4A 89 0E 1D 0D 89 16 21 0D 60 8B 
+                16 21 0D BF 05 00 4A 8B 0E 1D 0D BE 
+                05 00 83 FF 00 74 17 4F 42 60 B4 0C 
+                8B C9 8B D2 B0 00 CD 10 61 4E 41 83 
+                FE 00 74 DF EB EB 61 5B 61 BB 02 00 
+                EB 33 5B 61 60 BB 00 00 8B D2 A0 C0 
+                0C B4 0C 8B C9 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 3B 1E BB 0C 75 EE 61 
+                2B 0E BB 0C EB 0B 5B 61 BB 04 00 41 
+                EB 03 5B 61 41 E9 F8 00 BB 00 00 B8 
+                00 00 41 60 60 03 0E BB 0C 49 53 BB 
+                00 00 B4 0D BB 00 00 8B C9 8B D2 CD 
+                10 3A 06 C0 0C 75 03 E9 CD 00 42 5B 
+                43 3B 1E BB 0C 7C DF 61 BB 00 00 03 
+                0E BB 0C 49 53 BB 00 00 B4 0D BB 00 
+                00 8B C9 8B D2 CD 10 3A 06 C0 0C 75 
+                03 E9 A3 00 3A 06 C2 0C 74 2E 3A 06 
+                C1 0C 74 21 3A 06 C3 0C 74 5F 3A 06 
+                BF 0C 75 03 E9 80 00 3A 06 BE 0C 74 
+                7A 42 5B 43 3B 1E BB 0C 7C BE 61 EB 
+                79 5B 61 BB 01 00 EB 72 4A 89 0E 1D 
+                0D 89 16 21 0D 60 8B 16 21 0D BF 05 
+                00 4A 8B 0E 1D 0D BE 05 00 83 FF 00 
+                74 17 4F 42 60 B4 0C 8B C9 8B D2 B0 
+                00 CD 10 61 4E 41 83 FE 00 74 DF EB 
+                EB 61 5B 61 BB 02 00 EB 35 5B 61 03 
+                0E BB 0C 49 60 BB 00 00 8B D2 A0 C0 
+                0C B4 0C 8B C9 B4 0C 8B C9 8B D2 8A 
+                C0 CD 10 42 43 3B 1E BB 0C 75 EE 61 
+                41 EB 0B 5B 61 BB 04 00 49 EB 03 5B 
+                61 49 EB 00 89 0E D3 0C 89 16 D7 0C 
+                89 0E E3 0C 89 16 E7 0C 60 8B 16 D7 
+                0C 8B 3E BB 0C 4A 8B 0E D3 0C 8B 36 
+                BB 0C 83 FF 00 74 18 4F 42 60 B4 0C 
+                8B C9 8B D2 A0 BF 0C CD 10 61 4E 41 
+                83 FE 00 74 DD EB EA 61 83 FB 01 74 
+                0C 83 FB 02 74 0D 83 FB 04 74 0E EB 
+                13 FF 06 EF 0C EB 0D FE 06 F2 0C EB 
+                07 C6 06 13 0D 01 EB 00             
+[ 282]        :                                       ;check for Collision
+[ 283]    33E0: A0 13 0D                              mov  al,Collisionflag
+[ 284]    33E3: 3C 01                                 cmp al,1
+[ 285]    33E5: 75 03 E9 AF 01                        jz endmap
+[ 286]        :                                       
+[ 287]    33EA: 60 B4 0F CD 10 B4 02 B6 11 B2 00 CD   statusbar ; update statusbar
+                10 61 B4 09 BA 02 0D CD 21 60 B4 0F 
+                CD 10 B4 02 B6 11 B2 15 CD 10 61 B4 
+                09 BA F5 0C CD 21 B4 02 B7 00 B2 00 
+                B6 12 CD 10 B4 09 BA 3E 00 CD 21 B4 
+                02 B7 00 B2 00 B6 13 CD 10 B4 09 BA 
+                45 00 CD 21 B4 02 B7 00 B2 15 B6 12 
+                CD 10 B4 09 BA 3E 00 CD 21 B4 02 B7 
+                00 B2 15 B6 13 CD 10 B4 09 BA 45 00 
+                CD 21 A1 ED 0C BA 00 00 B9 E8 03 F7 
+                F1 8B CA B4 02 B7 00 B2 06 B6 12 CD 
+                10 8A D0 80 C2 30 CD 21 8B C1 B1 64 
+                F6 F1 8A DC B4 02 B7 00 B2 06 80 C2 
+                01 B6 12 CD 10 8A D0 80 C2 30 CD 21 
+                8B C3 B1 0A F6 F1 8A DC B4 02 B7 00 
+                B2 06 80 C2 02 B6 12 CD 10 8A D0 80 
+                C2 30 CD 21 B4 02 B7 00 B2 06 80 C2 
+                03 B6 12 CD 10 8A D3 80 C2 30 CD 21 
+                A1 EF 0C BA 00 00 B9 E8 03 F7 F1 8B 
+                CA B4 02 B7 00 B2 1B B6 12 CD 10 8A 
+                D0 80 C2 30 CD 21 8B C1 B1 64 F6 F1 
+                8A DC B4 02 B7 00 B2 1B 80 C2 01 B6 
+                12 CD 10 8A D0 80 C2 30 CD 21 8B C3 
+                B1 0A F6 F1 8A DC B4 02 B7 00 B2 1B 
+                80 C2 02 B6 12 CD 10 8A D0 80 C2 30 
+                CD 21 B4 02 B7 00 B2 1B 80 C2 03 B6 
+                12 CD 10 8A D3 80 C2 30 CD 21 A0 F1 
+                0C B4 00 B1 0A F6 F1 8A DC B4 02 B7 
+                00 B2 05 B6 13 CD 10 8A D0 80 C2 30 
+                CD 21 B4 02 B7 00 B2 05 80 C2 01 B6 
+                13 CD 10 8A D3 80 C2 30 CD 21 A0 F2 
+                0C B4 00 B1 0A F6 F1 8A DC B4 02 B7 
+                00 B2 1A B6 13 CD 10 8A D0 80 C2 30 
+                CD 21 B4 02 B7 00 B2 1A 80 C2 01 B6 
+                13 CD 10 8A D3 80 C2 30 CD 21       
+[ 288]        :                                       
+[ 289]    358C: B8 00 00                              mov ax,0  ;make delay
+[ 290]    358F:                                       lopbuf1:
+[ 291]    358F: 40                                    inc ax
+[ 292]    3590: 3B 06 19 0D                           cmp ax,delay
+[ 293]    3594: 75 F9                                 jne lopbuf1
+[ 294]        :                                       
+[ 295]    3596: E9 B1 EB                              jmp lopm1
+[ 296]        :                                       
+[ 297]    3599:                                       endmap:
+[ 298]    3599: A1 ED 0C                              mov AX,score1
+[ 299]    359C: 3B 06 EF 0C                           cmp AX,score2    ;win for player2
+[ 300]    35A0: 7C 0D                                 jl incrmap       ;change map
+[ 301]    35A2: 3B 06 EF 0C                           cmp AX,score2    ;win for player1
+[ 302]    35A6: 7F 03                                 jG incr1         ;incr res for player 1
+[ 303]    35A8: E9 B6 D9                              jmp mainmap      ; points equal , play again
+[ 304]    35AB:                                       incr1:
+[ 305]    35AB: FE 06 16 0D                           inc win1
+[ 306]        :                                       ;then change map
+[ 307]    35AF:                                       incrmap:
+[ 308]    35AF: FE 06 18 0D                           		inc mapn     ; change map (0,1,2)
+[ 309]    35B3: A0 18 0D                              		mov al,mapn
+[ 310]    35B6: 3C 02                                 		cmp al,2     ; if we already finished last map then al must =3
+[ 311]    35B8: 7F 03                                 		jg endgame   ; then end game
+[ 312]    35BA: E9 A4 D9                              		jmp mainmap  ; else there are more map map for play
+[ 313]        :                                       ;---------------------------------end of game -------------------------------
+[ 314]    35BD:                                       endgame:
+[ 315]    35BD: 60 B0 00 B4 0C B9 00 00 BA 00 00 CD   ClearScreen
+                10 42 81 FA C8 00 7E F7 41 81 F9 40 
+                01 7E ED 60 B4 0F CD 10 B4 02 B6 00 
+                B2 00 CD 10 61 61                   
+[ 316]        :                                       
+[ 317]        :                                       ;Determine the winner
+[ 318]    35E7: 80 3E 16 0D 02                        cmp win1,2
+[ 319]    35EC: 73 4E                                 jae Player1Win ; condtion for player 1 to win
+[ 320]        :                                       ;else player 2 will win
+[ 321]    35EE: 60 B4 0F CD 10 B4 02 B6 00 B2 00 CD   movecursor 0,0
+                10 61                               
+[ 322]    35FC: B4 09                                 mov ah, 9
+[ 323]    35FE: BA F5 0C                              mov dx, offset name2 + 2
+[ 324]    3601: CD 21                                 int 21h
+[ 325]    3603: B4 02 B7 00 B2 00 B6 01 CD 10 B4 09   dispstring winner,0,1
+                BA 1B 00 CD 21                      
+[ 326]    3614: 60 B4 0F CD 10 B4 02 B6 02 B2 00 CD   movecursor 0,2
+                10 61                               
+[ 327]        :                                       ;DISPLAY STRING.
+[ 328]    3622: B4 09                                 mov ah, 9 ;SERVICE TO DISPLAY STRING.
+[ 329]    3624: BA 02 0D                              mov dx, offset name1 + 2
+[ 330]    3627: CD 21                                 int 21h
+[ 331]    3629: B4 02 B7 00 B2 00 B6 03 CD 10 B4 09   dispstring loser,0,3
+                BA 2B 00 CD 21                      
+[ 332]    363A: EB 4E                                 jmp tothemain
+[ 333]        :                                       
+[ 334]    363C:                                       Player1Win:
+[ 335]    363C: 60 B4 0F CD 10 B4 02 B6 00 B2 00 CD   MoveCursor 0,0
+                10 61                               
+[ 336]    364A: B4 09                                 mov ah, 9
+[ 337]    364C: BA 02 0D                              mov dx, offset name1 + 2
+[ 338]    364F: CD 21                                 int 21h
+[ 339]    3651: B4 02 B7 00 B2 00 B6 01 CD 10 B4 09   dispstring winner,0,1
+                BA 1B 00 CD 21                      
+[ 340]    3662: 60 B4 0F CD 10 B4 02 B6 02 B2 00 CD   movecursor 0,2
+                10 61                               
+[ 341]    3670: B4 09                                 mov ah, 9
+[ 342]    3672: BA F5 0C                              mov dx, offset name2 + 2
+[ 343]    3675: CD 21                                 int 21h
+[ 344]    3677: B4 02 B7 00 B2 00 B6 03 CD 10 B4 09   dispstring loser,0,3
+                BA 2B 00 CD 21                      
+[ 345]    3688: EB 00                                 jmp tothemain
+[ 346]        :                                       
+[ 347]        :                                       
+[ 348]    368A:                                       tothemain:
+[ 349]    368A: B4 02 B7 00 B2 00 B6 04 CD 10 B4 09   dispstring  msgret,0,4
+                BA 9D 00 CD 21                      
+[ 350]    369B: B4 00                                 mov ah,0
+[ 351]    369D: CD 16                                 int 16h
+[ 352]    369F: E9 68 D7                              jmp retu
+[ 353]        :                                       ;-------------------------------------------------------chat mode -------------------------------------------------------
+[ 354]    36A2:                                       chatmode:
+[ 355]        :                                       ;Receive
+[ 356]        :                                       ;CMP VALUE, 0
+[ 357]        :                                       ;Jz chatmode
+[ 358]        :                                       ;CMP VALUE, '1'
+[ 359]        :                                       ;Jne retu
+[ 360]        :                                       ;mov  SENDDATA,6
+[ 361]        :                                       ;Send SENDDATA
+[ 362]        :                                       ;Receive
+[ 363]        :                                       
+[ 364]    36A2: 60 B8 00 06 B7 07 B9 00 00 BA 4F 18   chatmodedraw
+                CD 10 60 B4 0F CD 10 B4 02 B6 0C B2 
+                00 CD 10 61 B9 00 00 B4 02 B2 2D CD 
+                21 41 83 F9 4F 7E F4 61             
+[ 365]        :                                       ;DISPLAY FIR NAME.
+[ 366]    36CE: 60 B4 0F CD 10 B4 02 B6 00 B2 00 CD   MoveCursor 0,0
+                10 61                               
+[ 367]    36DC: B4 09                                 mov ah, 9
+[ 368]    36DE: BA 02 0D                              mov dx, offset name1 + 2
+[ 369]    36E1: CD 21                                 int 21h
+[ 370]        :                                       ;DISPLAY SEC NAME
+[ 371]    36E3: 60 B4 0F CD 10 B4 02 B6 0D B2 00 CD   MoveCursor 0,13
+                10 61                               
+[ 372]    36F1: B4 09                                 mov ah, 9
+[ 373]    36F3: BA F5 0C                              mov dx, offset name2 + 2
+[ 374]    36F6: CD 21                                 int 21h
+[ 375]    36F8: B4 02 B7 00 B2 00 B6 17 CD 10 B4 09   dispstring  msgret,0,23 ; FOR EXIT
+                BA 9D 00 CD 21                      
+[ 376]        :                                       ; INTIAL CURSOR
+[ 377]    3709: C6 06 28 0D 00                        mov X1,0
+[ 378]    370E: C6 06 29 0D 01                        mov Y1,1
+[ 379]    3713: C6 06 2A 0D 00                        mov X2,0
+[ 380]    3718: C6 06 2B 0D 0E                        mov Y2,14
+[ 381]    371D: 60 B4 0F CD 10 B4 02 8A 36 29 0D 8A   MoveCursor X1, Y1
+                16 28 0D CD 10 61                   
+[ 382]    372F:                                       chatlop:
+[ 383]    372F: 60 80 3E 27 0D 00 75 14 B4 01 CD 16   GetKey ;IF KEY PRESSED TAKE IT
+                74 09 B4 00 CD 16 A2 27 0D EB 05 C6 
+                06 27 0D 00 61                      
+[ 384]    374C: 80 3E 27 0D 1B                        CMP LETTER,27  ;IF EXIT PRESSED
+[ 385]    3751: 75 03 E9 B4 D6                        Jz retu
+[ 386]        :                                       
+[ 387]    3756: 80 3E 27 0D 00                        CMP LETTER, 0   ;IF NO KEY THEN NOTHING TO SEND ,MOVE TO RECIVE
+[ 388]    375B: 75 03                                 JNZ SEND_LETTER
+[ 389]    375D: E9 A9 00                              Jmp RECEIVE_LETTER
+[ 390]        :                                       
+[ 391]    3760:                                       SEND_LETTER:
+[ 392]    3760: 60 A0 28 0D 3C 4F 74 3C 8A 26 29 0D   PrintChar LETTER, X1, Y1  ;FIRST PRINT IT
+                80 FC 0B 74 07 80 FC 17 74 18 EB 37 
+                B4 06 B0 01 B7 07 B5 01 B1 00 B6 0B 
+                B2 4F CD 10 FE 0E 29 0D EB 21 B4 06 
+                B0 01 B7 07 B5 0E B1 00 B6 16 B2 4F 
+                CD 10 FE 0E 29 0D EB 0B FE 06 29 0D 
+                C6 06 28 0D 00 EB B9 8A 2E 28 0D 8A 
+                0E 29 0D 60 B4 0F CD 10 B4 02 8A F1 
+                8A D5 CD 10 61 B4 02 8A 16 27 0D CD 
+                21 61                               
+[ 393]    37CE: 60 B4 03 B7 00 CD 10 88 36 29 0D 88   	    SaveCursor X1, Y1         ;SAVE NEW POSTION
+                16 28 0D 61                         
+[ 394]    37DE: 60 BA FD 03 EC 24 20 74 FB 80 3E 27   Send LETTER               ;SEND
+                0D 0D 74 0E BA F8 03 A0 27 0D EE C6 
+                06 27 0D 00 EB 0C BA F8 03 A0 27 0D 
+                EE C6 06 27 0D 0A 61                
+[ 395]        :                                       
+[ 396]    3809:                                       RECEIVE_LETTER:
+[ 397]    3809: 60 BA FD 03 EC 24 01 74 09 BA F8 03   Receive
+                EC A2 26 0D EB 05 C6 06 26 0D 00 61 
+                                                    
+[ 398]    3821: 80 3E 26 0D 00                        CMP VALUE, 0  ;CHECK IF THERE ARE SOMETHING TO RECIVE
+[ 399]    3826: 75 03 E9 04 FF                        JZ chatlop
+[ 400]    382B: 80 3E 26 0D 07                        CMP VALUE,7
+[ 401]    3830: 75 03 E9 D5 D5                        Jz retu
+[ 402]    3835: 60 B4 0F CD 10 B4 02 8A 36 2B 0D 8A   	    MoveCursor X2, Y2 ;MOVE TO PLAYER2 CURSOR POSTION
+                16 2A 0D CD 10 61                   
+[ 403]    3847: 60 A0 2A 0D 3C 4F 74 3C 8A 26 2B 0D   PrintChar VALUE, X2, Y2  ;PRINT IT
+                80 FC 0B 74 07 80 FC 17 74 18 EB 37 
+                B4 06 B0 01 B7 07 B5 01 B1 00 B6 0B 
+                B2 4F CD 10 FE 0E 2B 0D EB 21 B4 06 
+                B0 01 B7 07 B5 0E B1 00 B6 16 B2 4F 
+                CD 10 FE 0E 2B 0D EB 0B FE 06 2B 0D 
+                C6 06 2A 0D 00 EB B9 8A 2E 2A 0D 8A 
+                0E 2B 0D 60 B4 0F CD 10 B4 02 8A F1 
+                8A D5 CD 10 61 B4 02 8A 16 26 0D CD 
+                21 61                               
+[ 404]    38B5: 60 B4 03 B7 00 CD 10 88 36 2B 0D 88   	    SaveCursor X2, Y2        ;SAVE NEW POSTION
+                16 2A 0D 61                         
+[ 405]    38C5: E9 67 FE                              jmp chatlop
+[ 406]        :                                       
+[ 407]    38C8:                                       EndApp:
+[ 408]    38C8: 60 BA FD 03 EC 24 20 74 FB 80 3E CA   Send EndButton  ;tell the another you quite
+                0C 0D 74 0E BA F8 03 A0 CA 0C EE C6 
+                06 CA 0C 00 EB 0C BA F8 03 A0 CA 0C 
+                EE C6 06 CA 0C 0A 61                
+[ 409]        :                                       ;int that end program
+[ 410]    38F3: B4 4C                                 MOV AH,04CH
+[ 411]    38F5: CD 21                                 INT 21h
+[ 412]        :                                       
+[ 413]    38F7: F4                                    HLT
+[ 414]        :                                       MAIN    ENDP
+[ 415]        :                                       END  MAIN
+[ 416]        :                                       
+ 
+===================================================================================================
+ 
+EXE HEADER - bytes from 0000 to 01FF inclusive.
+
+0000: 4D      -   exe signature (M)
+0001: 5A      -   exe signature (Z)
+0002: F8      -   bytes on last page (l.byte)
+0003: 00      -   bytes on last page (h.byte)
+0004: 1E      -   512 byte pages in file (l.byte)
+0005: 00      -   512 byte pages in file (h.byte)
+0006: 01      -   relocations (l.byte)
+0007: 00      -   relocations (h.byte)
+0008: 20      -   paragraphs in header (l.byte)
+0009: 00      -   paragraphs in header (h.byte)
+000A: 00      -   minimum memory (l.byte)
+000B: 00      -   minimum memory (h.byte)
+000C: FF      -   maximum memory (l.byte)
+000D: FF      -   maximum memory (h.byte)
+000E: 00      -   SS - stack segment (l.byte)
+000F: 00      -   SS - stack segment (h.byte)
+0010: 40      -   SP - stack pointer (l.byte)
+0011: 00      -   SP - stack pointer (h.byte)
+0012: 1D      -   check sum (l.byte)
+0013: 84      -   check sum (h.byte)
+0014: 00      -   IP - instruction pointer (l.byte)
+0015: 00      -   IP - instruction pointer (h.byte)
+0016: D7      -   CS - code segment (l.byte)
+0017: 00      -   CS - code segment (h.byte)
+0018: 1E      -   relocation table adress (l.byte)
+0019: 00      -   relocation table adress (h.byte)
+001A: 00      -   overlay number (l.byte)
+001B: 00      -   overlay number (h.byte)
+001C: 01      -   signature (l.byte)
+001D: 00      -   signature (h.byte)
+001E: 01      -   relocation table - offset inside segment (l.byte)
+001F: 00      -   relocation table - offset inside segment (h.byte)
+0020: D7      -   relocation table - segment anchor (l.byte)
+0021: 00      -   relocation table - segment anchor (h.byte)
+0022 to 01FF  -   reserved relocation area  (00) 
+
+
+
+
+===================================================================================================
