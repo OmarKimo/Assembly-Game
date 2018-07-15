@@ -1,5 +1,5 @@
 # Assembly-Game
-project at Cairo university faculty of engineering Microprocessor 2017 (semester) 
+project for faculty of engineering-Cairo university  Microprocessor 2017 (semester) 
 
 Auther: Yahia A. Abusaif And Omar M. Abd Elkareem
 
