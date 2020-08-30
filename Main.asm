@@ -1,4 +1,4 @@
-;Auther: Yahia Ali Abusaif , omar Mohammed mohammed 
+;Author: Yahia Ali Abusaif, Omar Mohammed Mohammed 
 include standrd.INC
 include laser.INC
 include chattting.INC  
